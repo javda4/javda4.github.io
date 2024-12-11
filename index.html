@@ -72,6 +72,7 @@
             text-decoration: none;
             border-radius: 5px;
             transition: background-color 0.3s ease;
+            margin: 10px;
         }
 
         .btn:hover {
@@ -121,6 +122,7 @@
         <h2>Revolutionize Your Network Configurations</h2>
         <p>Net Spectre is a powerful new programming language designed to make network capture and scanning configurations seamless and efficient.</p>
         <a href="#example" class="btn">View Example</a>
+        <a href="#" class="btn" id="download-button">Download Tools</a>
     </section>
 
     <section class="content" id="about">
@@ -156,6 +158,21 @@ scan : scan2
     <footer id="contact">
         <p>Made with ❤️ by Josh. For inquiries, reach out to <a href="mailto:your-email@example.com" style="color: #f0a500;">your-email@example.com</a></p>
     </footer>
+
+    <script>
+        document.getElementById('download-button').addEventListener('click', function() {
+            alert('The following steps will download and install the necessary tools:\n1. Wireshark\n2. Nmap\n3. Python libraries: python-nmap, pyshark');
+            
+            // Download Wireshark
+            window.open('https://www.wireshark.org/download.html', '_blank');
+
+            // Download Nmap
+            window.open('https://nmap.org/download.html', '_blank');
+
+            // Instructions for pip install (user will need to run these manually)
+            alert('Manual user step required: Please run the following command in your terminal or command prompt:\npip install python-nmap pyshark');
+            alert('Manual user step required: Please set Wireshark and nmap into Path')
+        });
+    </script>
 </body>
 </html>
-
