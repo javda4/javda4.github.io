@@ -1,9 +1,160 @@
-<!DOCTYPE html><!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]--><!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]--><!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]--><!--[if gt IE 8]><!--><html class=no-js><!--<![endif]--><head><meta charset=utf-8><title>ArnoldC</title><meta name=description content=""><meta name=viewport content="width=device-width"><link rel="shortcut icon" href=d8500ddf.favicon.ico><!-- Place favicon.ico and apple-touch-icon.png in the root directory --><link rel=stylesheet href=styles/1d7769e0.vendor.css><link rel=stylesheet href=styles/292afb59.main.css><link href='http://fonts.googleapis.com/css?family=Orbitron' rel='stylesheet' type='text/css'><link href='http://fonts.googleapis.com/css?family=Raleway' rel='stylesheet' type='text/css'><body><!--[if lt IE 10]>
-            <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
-        <![endif]--><div class=container><h1>ArnoldC</h1><p class="lead slogan">A programming language based on the one liners of Arnold Schwarzenegger</p><div class=buttons><a href=http://github.com/lhartikk/ArnoldC type=button class="btn btn-lg btn-danger">More on Github</a> <a href=http://lhartikk.github.io/ArnoldC.jar type=button class="btn btn-primary btn-lg">Download</a></div><hr><div class=example><h3>Try it yourself</h3><div class=left><strong>hello.arnoldc</strong></div><pre>IT'S SHOWTIME
-TALK TO THE HAND <span class=str>"hello world"</span>
-YOU HAVE BEEN TERMINATED</pre><pre>java -jar ArnoldC.jar hello.arnoldc
-java hello</pre><h4><a href="https://www.youtube.com/watch?v=EL8e2ujXe8g">Stop whining</a> and start coding!</h4><hr><h3 class=subl>Now with Sublime support</h3><img src=images/d41d8cd9.ArnoldCSublime.png class=img-thumbnail><div class=sublime-instructions><div class="row-fluid left"><div class="col-lg-8 left"><ol><h4><li>Download the markup</li></h4><h4><li>Linux folder</li></h4><span class=folder>~/.config/sublime-text-v/Packages/ArnoldC</span><br><h4>Windows folder<br></h4><span class=folder>%APPDATA%\Sublime Text v\Packages\ArnoldC</span><br><h4>Mac folder<br></h4><span class=folder>~/Library/Application Support/Sublime Text 3/Packages/ArnoldC</span><li><h4><a class=meanwhile href="https://www.youtube.com/watch?v=pDxn0Xfqkgw">???</a></h4></li></ol></div><div class="col-lg-4 left tm"><a class="btn btn-primary" href=arnoldc.tmLanguage>Download<br><small>arnoldc.tmLanguage</small></a></div></div></div>
-<div class=footer><div class=pull-left><p style="margin: 10.5px 0px 0px 5px"> by <a href="https://twitter.com/lhartikk"> @lhartikk</a></p></div><blockquote class=pull-right><p>GET DOWN!</p><footer>Arnold Schwarzenegger</footer></blockquote></div></div></div><script src=scripts/a92a213a.vendor.js></script><script src=scripts/6aada3b6.main.js></script>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Net Spectre</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-            
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #1e1e2f;
+            color: #ffffff;
+            line-height: 1.6;
+        }
+
+        header {
+            background-color: #2e2e4f;
+            padding: 20px 0;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.7);
+        }
+
+        header h1 {
+            font-size: 3rem;
+            color: #f0a500;
+        }
+
+        nav ul {
+            display: flex;
+            justify-content: center;
+            list-style: none;
+        }
+
+        nav ul li {
+            margin: 0 15px;
+        }
+
+        nav ul li a {
+            color: #ffffff;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .hero {
+            text-align: center;
+            padding: 100px 20px;
+            background-color: #28284e;
+        }
+
+        .hero h2 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 800px;
+            margin: 0 auto 30px auto;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 15px 30px;
+            font-size: 1rem;
+            color: #ffffff;
+            background-color: #f0a500;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn:hover {
+            background-color: #d48f00;
+        }
+
+        .content {
+            padding: 50px 20px;
+            background-color: #1e1e2f;
+        }
+
+        .code-example {
+            background-color: #2e2e4f;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            overflow-x: auto;
+        }
+
+        .code-example pre {
+            font-family: 'Courier New', monospace;
+            font-size: 1rem;
+            color: #f0a500;
+        }
+
+        footer {
+            background-color: #2e2e4f;
+            text-align: center;
+            padding: 20px 0;
+            color: #ffffff;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Net Spectre</h1>
+        <nav>
+            <ul>
+                <li><a href="#about">About</a></li>
+                <li><a href="#example">Example</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section class="hero">
+        <h2>Revolutionize Your Network Configurations</h2>
+        <p>Net Spectre is a powerful new programming language designed to make network capture and scanning configurations seamless and efficient.</p>
+        <a href="#example" class="btn">View Example</a>
+    </section>
+
+    <section class="content" id="about">
+        <h2>About Net Spectre</h2>
+        <p>Net Spectre allows network professionals and enthusiasts to define and execute network capture and scan configurations with a simple, readable syntax. It empowers users to automate and streamline networking tasks.</p>
+    </section>
+
+    <section class="content" id="example">
+        <h2>Example of Net Spectre Code</h2>
+        <div class="code-example">
+            <pre>
+config_capture : cap1
+    interface : Ethernet
+    packets : 60
+    ipv4 : 100.110.26.162
+    json : False
+    ek : False
+
+
+config_scan : scan2
+    target : 100.110.26.162
+    ports : 0-443
+    arguments :
+    verbose_level : 5
+
+
+capture : cap1
+scan : scan2
+            </pre>
+        </div>
+    </section>
+
+    <footer id="contact">
+        <p>Made with ❤️ by Josh. For inquiries, reach out to <a href="mailto:your-email@example.com" style="color: #f0a500;">your-email@example.com</a></p>
+    </footer>
+</body>
+</html>
