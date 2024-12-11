@@ -162,14 +162,12 @@ scan : scan2
     <script>
         document.getElementById('download-button').addEventListener('click', function() {
             alert('The following steps will download and install the necessary tools:\n1. Wireshark\n2. Nmap\n3. Python libraries: python-nmap, pyshark');
-            
-            // Download Wireshark
-            window.open('https://www.wireshark.org/download.html', '_blank');
-    
-
             // Instructions for pip install (user will need to run these manually)
             alert('Manual user step required: Please run the following command in your terminal or command prompt:\npip install python-nmap pyshark');
             alert('Manual user step required: Please set Wireshark and nmap into Path');
+            // Download Wireshark
+            window.open('https://www.wireshark.org/download.html', '_blank');
+            // Download nmap
             window.open('https://nmap.org/download.html', '_blank');
           
         });
