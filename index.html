@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="UTF-8" />
-  <title>Camera pls</title>
+  <title>Camera2 pls</title>
 
   <style>
     body {
@@ -35,7 +35,12 @@
 
 <div id="debug">starting...</div>
 <video id="video" autoplay playsinline muted></video>
-<script src="https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.0/vision_bundle.js"></script>
+<script type="module">
+import vision from "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14";
+
+window.FaceLandmarker = vision.FaceLandmarker;
+window.FilesetResolver = vision.FilesetResolver;
+</script>
 <script src="app.js"></script>
 
 </body>
