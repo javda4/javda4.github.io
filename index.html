@@ -2,40 +2,24 @@
 <html>
 <head>
   <meta charset="UTF-8" />
-  <title>Stable Camera + WebGL</title>
+  <title>Camera Isolation Test</title>
 
   <style>
     body {
       margin: 0;
-      overflow: hidden;
       background: black;
     }
 
-    /* CAMERA LAYER */
     video {
+      width: 400px;
       position: fixed;
       bottom: 10px;
       left: 10px;
-      width: 300px;
       border: 3px solid lime;
-      border-radius: 10px;
       z-index: 9999;
-
-      /* IMPORTANT: prevents hidden rendering issues */
-      display: block;
-      visibility: visible;
-      opacity: 1;
+      background: black;
     }
 
-    /* THREE.JS LAYER */
-    canvas {
-      position: fixed;
-      top: 0;
-      left: 0;
-      z-index: 1;
-    }
-
-    /* DEBUG PANEL */
     #debug {
       position: fixed;
       top: 10px;
@@ -49,12 +33,9 @@
 
 <body>
 
-<div id="debug">loading...</div>
-
+<div id="debug">starting...</div>
 <video id="video" autoplay playsinline muted></video>
-<canvas id="canvas"></canvas>
 
-<script src="https://cdn.jsdelivr.net/npm/three@0.161.0/build/three.min.js"></script>
 <script src="app.js"></script>
 
 </body>
