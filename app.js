@@ -3,73 +3,68 @@ const debug = document.getElementById("debug");
 
 let landmarker;
 
-function log(msg) {
+function log(msg){
   debug.innerText = msg;
   console.log(msg);
 }
 
-async function startCamera() {
+async function startCamera(){
+
+  log("requesting camera...");
+
   const stream = await navigator.mediaDevices.getUserMedia({
-    video: true,
-    audio: false
+    video:true,
+    audio:false
   });
 
   video.srcObject = stream;
+
   await video.play();
 
   log("camera ready ✔");
 }
 
-// ---------------- LOAD FACE MODEL ----------------
-async function loadModel() {
+async function loadModel(){
 
-  log("loading model...");
+  log("loading vision wasm...");
 
-  try {
-    const vision = await import(
-      "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14"
-    );
+  const fileset = await FilesetResolver.forVisionTasks(
+    "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14/wasm"
+  );
 
-    const fileset = await vision.FilesetResolver.forVisionTasks(
-      "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14/wasm"
-    );
+  log("loading face model...");
 
-    landmarker = await vision.FaceLandmarker.createFromOptions(fileset, {
-      baseOptions: {
-        modelAssetPath:
-          "https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/1/face_landmarker.task"
-      },
-      runningMode: "VIDEO",
-      numFaces: 1
-    });
+  landmarker = await FaceLandmarker.createFromOptions(fileset,{
+    baseOptions:{
+      modelAssetPath:"./assets/face_landmarker.task"
+    },
+    runningMode:"VIDEO",
+    numFaces:1
+  });
 
-    log("model loaded ✔");
-
-  } catch (e) {
-    log("MODEL FAILED: " + e.message);
-    console.error(e);
-  }
+  log("model loaded ✔");
 }
 
-// ---------------- DETECTION LOOP ----------------
-function loop() {
+function loop(){
 
-  if (landmarker && video.readyState === 4) {
+  if(landmarker && video.readyState===4){
 
-    const result = landmarker.detectForVideo(video, performance.now());
+    const result = landmarker.detectForVideo(video,performance.now());
 
-    if (result.faceLandmarks && result.faceLandmarks.length > 0) {
-      log("FACE DETECTED ✔ " + result.faceLandmarks[0].length + " points");
-    } else {
-      log("no face detected...");
+    if(result.faceLandmarks && result.faceLandmarks.length>0){
+
+      log("FACE DETECTED ✔ points: "+result.faceLandmarks[0].length);
+
+    }else{
+
+      log("no face detected");
     }
   }
 
   requestAnimationFrame(loop);
 }
 
-// ---------------- MAIN ----------------
-async function main() {
+async function main(){
 
   await startCamera();
   await loadModel();
