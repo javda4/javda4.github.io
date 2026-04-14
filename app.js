@@ -1,16 +1,9 @@
+let FaceLandmarker, FilesetResolver;
+
 const video = document.getElementById("video");
 const canvas = document.getElementById("canvas");
 
-// -------------------- CAMERA (always runs first)
-// --------------------
-async function startCamera() {
-  const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-  video.srcObject = stream;
-  await video.play();
-}
-
-// -------------------- THREE.JS (matplotlib replacement)
-// --------------------
+// ---------------- THREE.JS (Matplotlib replacement) ----------------
 const renderer = new THREE.WebGLRenderer({ canvas, alpha: true });
 renderer.setSize(window.innerWidth, window.innerHeight);
 
@@ -31,44 +24,39 @@ const material = new THREE.PointsMaterial({
   size: 0.01
 });
 
-const points = new THREE.Points(geometry, material);
-scene.add(points);
+const cloud = new THREE.Points(geometry, material);
+scene.add(cloud);
 
-// -------------------- LOAD MEDIA PIPE SAFELY
-// --------------------
-let FaceLandmarker;
-let FilesetResolver;
+// ---------------- CAMERA (OpenCV replacement) ----------------
+async function startCamera() {
+  const stream = await navigator.mediaDevices.getUserMedia({
+    video: true
+  });
 
-async function loadMediaPipe() {
-  try {
-    const vision = await import(
-      "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.0/vision_bundle.mjs"
-    );
-
-    FaceLandmarker = vision.FaceLandmarker;
-    FilesetResolver = vision.FilesetResolver;
-
-    console.log("MediaPipe loaded");
-  } catch (e) {
-    console.error("MediaPipe failed:", e);
-    return false;
-  }
-
-  return true;
+  video.srcObject = stream;
+  await video.play();
 }
 
-// -------------------- MAIN LOOP
-// --------------------
+// ---------------- LOAD MEDIAPIPE CDN ----------------
+async function loadMediaPipe() {
+
+  const script = document.createElement("script");
+  script.src =
+    "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.0/vision_bundle.js";
+
+  document.head.appendChild(script);
+
+  await new Promise((res) => (script.onload = res));
+
+  FaceLandmarker = window.FaceLandmarker;
+  FilesetResolver = window.FilesetResolver;
+}
+
+// ---------------- MAIN ----------------
 async function main() {
 
   await startCamera();
-
-  const mpOK = await loadMediaPipe();
-
-  if (!mpOK) {
-    console.warn("Running camera only mode");
-    return;
-  }
+  await loadMediaPipe();
 
   const fileset = await FilesetResolver.forVisionTasks(
     "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.0/wasm"
@@ -76,7 +64,8 @@ async function main() {
 
   const landmarker = await FaceLandmarker.createFromOptions(fileset, {
     baseOptions: {
-      modelAssetPath: "./assets/face_landmarker.task"
+      modelAssetPath:
+        "https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/1/face_landmarker.task"
     },
     runningMode: "VIDEO",
     numFaces: 1
@@ -88,9 +77,13 @@ async function main() {
 
     let pts = [];
 
-    if (result.faceLandmarks?.length > 0) {
+    if (result.faceLandmarks && result.faceLandmarks.length > 0) {
       for (const lm of result.faceLandmarks[0]) {
-        pts.push(lm.x - 0.5, -(lm.y - 0.5), lm.z);
+        pts.push(
+          lm.x - 0.5,
+          -(lm.y - 0.5),
+          lm.z
+        );
       }
 
       geometry.setAttribute(
