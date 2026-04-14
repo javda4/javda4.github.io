@@ -29,7 +29,7 @@ async function loadModel(){
   log("loading vision wasm...");
 
   const fileset = await FilesetResolver.forVisionTasks(
-    "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14/wasm"
+    "./assets/wasm"
   );
 
   log("loading face model...");
