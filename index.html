@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>FaceMesh 2D + 3D Split View</title>
+<title>FaceMesh 2D + 3D Split Stable</title>
 
 <style>
 body {
@@ -12,33 +12,37 @@ body {
   display: flex;
 }
 
-/* ---------------- LEFT SIDE (CAMERA) ---------------- */
+/* ---------------- LEFT SIDE ---------------- */
 #left {
   width: 50vw;
   height: 100vh;
   position: relative;
   overflow: hidden;
-  background: black;
 }
 
-/* video */
+/* video fills container */
 #video {
   position: absolute;
   width: 100%;
   height: 100%;
+
   object-fit: cover;
   transform: scaleX(-1);
 }
 
-/* overlay canvas */
+/* overlay matches EXACT display size */
 #overlay {
   position: absolute;
   width: 100%;
   height: 100%;
+
+  left: 0;
+  top: 0;
+
   pointer-events: none;
 }
 
-/* ---------------- RIGHT SIDE (3D) ---------------- */
+/* ---------------- RIGHT SIDE ---------------- */
 #right {
   width: 50vw;
   height: 100vh;
@@ -48,13 +52,12 @@ body {
   justify-content: center;
 }
 
-/* simple canvas for 3D render */
 #canvas3d {
   width: 100%;
   height: 100%;
 }
 
-/* debug */
+/* ---------------- DEBUG ---------------- */
 #debug {
   position: fixed;
   top: 10px;
