@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>FaceMesh Working (iPhone Fixed)</title>
+<title>FaceMesh iPhone Fixed</title>
 
 <style>
 body {
@@ -11,8 +11,8 @@ body {
   overflow: hidden;
 }
 
-/* camera + overlay MUST match exactly */
-#video, #overlay {
+/* IMPORTANT: only video is mirrored */
+#video {
   position: fixed;
   bottom: 10px;
   left: 10px;
@@ -22,20 +22,24 @@ body {
 
   object-fit: cover;
   border: 3px solid lime;
+
+  transform: scaleX(-1); /* mirror only video */
 }
 
-/* overlay sits on top */
+/* canvas MUST NOT be mirrored */
 #overlay {
+  position: fixed;
+  bottom: 10px;
+  left: 10px;
+
+  width: 400px;
+  height: 300px;
+
   pointer-events: none;
   z-index: 2;
 }
 
-/* video behind */
-#video {
-  z-index: 1;
-}
-
-/* debug text */
+/* debug */
 #debug {
   position: fixed;
   top: 10px;
