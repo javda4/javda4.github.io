@@ -18,7 +18,7 @@ faceMesh.setOptions({
   minTrackingConfidence: 0.5
 });
 
-// ---------------- SYNC SIZE ----------------
+// ---------------- SYNC ----------------
 
 function syncCanvasToVideo() {
   const w = video.videoWidth;
@@ -41,9 +41,11 @@ faceMesh.onResults((results) => {
     ctx.fillStyle = "lime";
 
     for (const p of points) {
-      const x = p.x * canvas.width;
+
+      // 🔥 FIX: mirror X because video is flipped in CSS
+      const x = (1 - p.x) * canvas.width;
       const y = p.y * canvas.height;
-      
+
       ctx.beginPath();
       ctx.arc(x, y, 2, 0, Math.PI * 2);
       ctx.fill();
