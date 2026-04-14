@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="UTF-8" />
-  <title>Face Mapping CDN Build</title>
+  <title>Face Mapping Fix</title>
 
   <style>
     body {
@@ -11,21 +11,27 @@
       background: black;
     }
 
+    /* CAMERA LAYER */
     video {
-      position: absolute;
-      width: 220px;
+      position: fixed;
+      width: 240px;
       bottom: 10px;
       left: 10px;
       transform: scaleX(-1);
       border: 2px solid lime;
       border-radius: 10px;
       z-index: 10;
+      background: black;
     }
 
+    /* THREE.JS LAYER */
     canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
       width: 100vw;
       height: 100vh;
-      display: block;
+      z-index: 1;
     }
   </style>
 </head>
@@ -35,10 +41,7 @@
 <video id="video" autoplay playsinline></video>
 <canvas id="canvas"></canvas>
 
-<!-- Three.js -->
 <script src="https://cdn.jsdelivr.net/npm/three@0.161.0/build/three.min.js"></script>
-
-<!-- App -->
 <script src="app.js"></script>
 
 </body>
