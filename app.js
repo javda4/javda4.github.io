@@ -3,10 +3,6 @@ const canvas = document.getElementById("overlay");
 const ctx = canvas.getContext("2d");
 const debug = document.getElementById("debug");
 
-// resize canvas to match display
-canvas.width = 400;
-canvas.height = 300;
-
 // ---------------- FACEMESH ----------------
 
 const faceMesh = new FaceMesh({
@@ -22,30 +18,45 @@ faceMesh.setOptions({
   minTrackingConfidence: 0.5
 });
 
+// ---------------- RESIZE HELPERS ----------------
+
+function syncCanvasToVideo() {
+  const w = video.videoWidth;
+  const h = video.videoHeight;
+
+  if (!w || !h) return;
+
+  canvas.width = w;
+  canvas.height = h;
+}
+
 // ---------------- RESULTS ----------------
 
 faceMesh.onResults((results) => {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  ctx.clearRect(0,0,canvas.width,canvas.height);
-
-  if(results.multiFaceLandmarks.length > 0){
-
+  if (results.multiFaceLandmarks && results.multiFaceLandmarks.length > 0) {
     const points = results.multiFaceLandmarks[0];
+
+    // 🔥 FIX: mirror correction for iPhone front camera
+    ctx.save();
+    ctx.scale(-1, 1);
+    ctx.translate(-canvas.width, 0);
 
     ctx.fillStyle = "lime";
 
-    for(const p of points){
-
+    for (const p of points) {
       const x = p.x * canvas.width;
       const y = p.y * canvas.height;
 
       ctx.beginPath();
-      ctx.arc(x,y,2,0,Math.PI*2);
+      ctx.arc(x, y, 2, 0, Math.PI * 2);
       ctx.fill();
     }
 
-    debug.innerText = "FACE DETECTED ✔ " + points.length;
+    ctx.restore();
 
+    debug.innerText = "FACE DETECTED ✔ " + points.length;
   } else {
     debug.innerText = "no face";
   }
@@ -55,7 +66,8 @@ faceMesh.onResults((results) => {
 
 const camera = new Camera(video, {
   onFrame: async () => {
-    await faceMesh.send({image: video});
+    syncCanvasToVideo();
+    await faceMesh.send({ image: video });
   },
   width: 640,
   height: 480
@@ -63,4 +75,7 @@ const camera = new Camera(video, {
 
 camera.start();
 
-debug.innerText = "camera + facemesh running ✔";
+video.onloadedmetadata = () => {
+  syncCanvasToVideo();
+  debug.innerText = "camera + facemesh running ✔";
+};
