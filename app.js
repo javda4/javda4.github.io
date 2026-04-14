@@ -1,9 +1,7 @@
-let FaceLandmarker, FilesetResolver;
-
 const video = document.getElementById("video");
 const canvas = document.getElementById("canvas");
 
-// ---------------- THREE.JS (Matplotlib replacement) ----------------
+// ---------------- THREE ----------------
 const renderer = new THREE.WebGLRenderer({ canvas, alpha: true });
 renderer.setSize(window.innerWidth, window.innerHeight);
 
@@ -27,72 +25,36 @@ const material = new THREE.PointsMaterial({
 const cloud = new THREE.Points(geometry, material);
 scene.add(cloud);
 
-// ---------------- CAMERA (OpenCV replacement) ----------------
+// ---------------- CAMERA (FORCED SAFE START) ----------------
 async function startCamera() {
-  const stream = await navigator.mediaDevices.getUserMedia({
-    video: true
-  });
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ video: true });
 
-  video.srcObject = stream;
-  await video.play();
-}
+    video.srcObject = stream;
 
-// ---------------- LOAD MEDIAPIPE CDN ----------------
-async function loadMediaPipe() {
+    await new Promise((resolve) => {
+      video.onloadedmetadata = () => {
+        video.play();
+        resolve();
+      };
+    });
 
-  const script = document.createElement("script");
-  script.src =
-    "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.0/vision_bundle.js";
-
-  document.head.appendChild(script);
-
-  await new Promise((res) => (script.onload = res));
-
-  FaceLandmarker = window.FaceLandmarker;
-  FilesetResolver = window.FilesetResolver;
+    console.log("CAMERA STARTED");
+  } catch (err) {
+    console.error("CAMERA ERROR:", err);
+  }
 }
 
 // ---------------- MAIN ----------------
 async function main() {
 
   await startCamera();
-  await loadMediaPipe();
 
-  const fileset = await FilesetResolver.forVisionTasks(
-    "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.0/wasm"
-  );
-
-  const landmarker = await FaceLandmarker.createFromOptions(fileset, {
-    baseOptions: {
-      modelAssetPath:
-        "https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/1/face_landmarker.task"
-    },
-    runningMode: "VIDEO",
-    numFaces: 1
-  });
-
+  // TEMP DEBUG: confirm loop works BEFORE MediaPipe
   function loop() {
 
-    const result = landmarker.detectForVideo(video, performance.now());
-
-    let pts = [];
-
-    if (result.faceLandmarks && result.faceLandmarks.length > 0) {
-      for (const lm of result.faceLandmarks[0]) {
-        pts.push(
-          lm.x - 0.5,
-          -(lm.y - 0.5),
-          lm.z
-        );
-      }
-
-      geometry.setAttribute(
-        "position",
-        new THREE.Float32BufferAttribute(pts, 3)
-      );
-
-      geometry.attributes.position.needsUpdate = true;
-    }
+    // simple rotating test so we know render is alive
+    cloud.rotation.y += 0.01;
 
     renderer.render(scene, camera);
     requestAnimationFrame(loop);
