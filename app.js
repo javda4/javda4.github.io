@@ -40,8 +40,6 @@ faceMesh.onResults((results) => {
 
     // 🔥 FIX: mirror correction for iPhone front camera
     ctx.save();
-    ctx.scale(-1, 1);
-    ctx.translate(-canvas.width, 0);
 
     ctx.fillStyle = "lime";
 
