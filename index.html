@@ -2,15 +2,58 @@
 <html>
 <head>
   <meta charset="UTF-8" />
-  <title>Face Map</title>
+  <title>Camera Test</title>
   <style>
-    body { margin: 0; overflow: hidden; background: black; }
-    video { position: absolute; width: 200px; bottom: 10px; left: 10px; }
-    canvas { width: 100vw; height: 100vh; display: block; }
+    body {
+      margin: 0;
+      background: black;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    video {
+      width: 90vw;
+      max-width: 600px;
+      border-radius: 12px;
+      transform: scaleX(-1);
+    }
+
+    button {
+      position: absolute;
+      top: 20px;
+      padding: 10px 15px;
+      font-size: 16px;
+      z-index: 10;
+    }
   </style>
 </head>
 
 <body>
-<h1>TEST PAGE LOADED</h1>
+
+<button onclick="startCamera()">Start Camera</button>
+<video id="video" autoplay playsinline></video>
+
+<script>
+async function startCamera() {
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({
+      video: true,
+      audio: false
+    });
+
+    const video = document.getElementById("video");
+    video.srcObject = stream;
+    await video.play();
+
+    console.log("Camera started successfully");
+  } catch (err) {
+    console.error(err);
+    alert("Camera failed: " + err.message);
+  }
+}
+</script>
+
 </body>
 </html>
