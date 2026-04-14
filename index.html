@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Face Landmark + 3D Viewer</title>
+<title>Face Tracking Test</title>
 
 <style>
 
@@ -12,8 +12,8 @@ background:black;
 overflow:hidden;
 }
 
-/* camera */
-video{
+/* camera feed */
+#video{
 position:fixed;
 bottom:10px;
 left:10px;
@@ -22,22 +22,25 @@ border:3px solid lime;
 z-index:1;
 }
 
-/* 2D landmark overlay */
+/* overlay exactly on top of camera */
 #overlay{
 position:fixed;
 bottom:10px;
 left:10px;
+width:400px;
+height:300px;
 z-index:2;
 pointer-events:none;
 }
 
-/* 3D viewer */
+/* 3D viewer area */
 #viewer3d{
 position:fixed;
 top:0;
 right:0;
 width:50vw;
 height:100vh;
+background:#111;
 z-index:0;
 }
 
@@ -48,6 +51,7 @@ top:10px;
 left:10px;
 color:white;
 font-family:monospace;
+font-size:16px;
 z-index:10;
 }
 
