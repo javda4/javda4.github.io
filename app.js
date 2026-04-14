@@ -18,7 +18,7 @@ faceMesh.setOptions({
   minTrackingConfidence: 0.5
 });
 
-// ---------------- RESIZE HELPERS ----------------
+// ---------------- SYNC SIZE ----------------
 
 function syncCanvasToVideo() {
   const w = video.videoWidth;
@@ -35,11 +35,8 @@ function syncCanvasToVideo() {
 faceMesh.onResults((results) => {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  if (results.multiFaceLandmarks && results.multiFaceLandmarks.length > 0) {
+  if (results.multiFaceLandmarks?.length > 0) {
     const points = results.multiFaceLandmarks[0];
-
-    // 🔥 FIX: mirror correction for iPhone front camera
-    ctx.save();
 
     ctx.fillStyle = "lime";
 
@@ -51,8 +48,6 @@ faceMesh.onResults((results) => {
       ctx.arc(x, y, 2, 0, Math.PI * 2);
       ctx.fill();
     }
-
-    ctx.restore();
 
     debug.innerText = "FACE DETECTED ✔ " + points.length;
   } else {
