@@ -1,177 +1,18 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NetSpectre</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Arial', sans-serif;
-            background-color: #1e1e2f;
-            color: #ffffff;
-            line-height: 1.6;
-        }
-
-        header {
-            background-color: #2e2e4f;
-            padding: 20px 0;
-            text-align: center;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.7);
-        }
-
-        header h1 {
-            font-size: 3rem;
-            color: #f0a500;
-        }
-
-        nav ul {
-            display: flex;
-            justify-content: center;
-            list-style: none;
-        }
-
-        nav ul li {
-            margin: 0 15px;
-        }
-
-        nav ul li a {
-            color: #ffffff;
-            text-decoration: none;
-            font-weight: bold;
-        }
-
-        .hero {
-            text-align: center;
-            padding: 100px 20px;
-            background-color: #28284e;
-        }
-
-        .hero h2 {
-            font-size: 2.5rem;
-            margin-bottom: 20px;
-        }
-
-        .hero p {
-            font-size: 1.2rem;
-            max-width: 800px;
-            margin: 0 auto 30px auto;
-        }
-
-        .btn {
-            display: inline-block;
-            padding: 15px 30px;
-            font-size: 1rem;
-            color: #ffffff;
-            background-color: #f0a500;
-            text-decoration: none;
-            border-radius: 5px;
-            transition: background-color 0.3s ease;
-            margin: 10px;
-        }
-
-        .btn:hover {
-            background-color: #d48f00;
-        }
-
-        .content {
-            padding: 50px 20px;
-            background-color: #1e1e2f;
-        }
-
-        .code-example {
-            background-color: #2e2e4f;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-            overflow-x: auto;
-        }
-
-        .code-example pre {
-            font-family: 'Courier New', monospace;
-            font-size: 1rem;
-            color: #f0a500;
-        }
-
-        footer {
-            background-color: #2e2e4f;
-            text-align: center;
-            padding: 20px 0;
-            color: #ffffff;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <title>Face Mapping WebGL</title>
+  <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
-    <header>
-        <h1>NetSpectre</h1>
-        <nav>
-            <ul>
-                <li><a href="#about">About</a></li>
-                <li><a href="#example">Example</a></li>
-                <li><a href="#contact">Contact</a></li>
-            </ul>
-        </nav>
-    </header>
 
-    <section class="hero">
-        <h2>Revolutionize Your Network Configurations</h2>
-        <p>NetSpectre is a powerful new open-source programming language designed to make network capture and scanning configurations seamless and efficient.</p>
-        <p>If you are interested in the language and would like to learn more, you can find it in the <a href="https://github.com/javda4/NetSpectre.git" target="_blank">NetSpectre GitHub Repository</a></p>
-        <a href="#example" class="btn">View Example</a>
-        <a href="#" class="btn" id="download-button">Download Tools</a>
-    </section>
+<video id="video" autoplay playsinline></video>
+<canvas id="canvas"></canvas>
 
-    <section class="content" id="about">
-        <h2>About NetSpectre</h2>
-        <p>NetSpectre allows network professionals and enthusiasts to define and execute network capture and scan configurations with a simple, readable syntax. It empowers users to automate and streamline networking tasks.</p>
-    </section>
+<script src="https://cdn.jsdelivr.net/npm/three@0.161.0/build/three.min.js"></script>
+<script type="module" src="app.js"></script>
 
-    <section class="content" id="example">
-        <h2>Example of NetSpectre Code</h2>
-        <div class="code-example">
-            <pre>
-config_capture : cap1
-    interface : Ethernet
-    packets : 60
-    ipv4 : 100.110.26.162
-    json : False
-    ek : False
-
-
-config_scan : scan2
-    target : 100.110.26.162
-    ports : 0-443
-    arguments :
-    verbose_level : 5
-
-
-capture : cap1
-                
-scan : scan2
-            </pre>
-        </div>
-    </section>
-
-    <footer id="contact">
-        <p>Made with ❤️ by Josh. For inquiries, reach out to <a href="mailto:netspectre4@gmail.com" style="color: #f0a500;">netspectre4@gmail.com</a></p>
-    </footer>
-
-    <script>
-        document.getElementById('download-button').addEventListener('click', function() {
-            alert('The following steps will download and install the necessary tools:\n1. Wireshark\n2. Nmap\n3. Python libraries: python-nmap, pyshark');
-            // Instructions for pip install (user will need to run these manually)
-            alert('Manual user step required: Please run the following command in your terminal or command prompt:\npip install python-nmap pyshark');
-            alert('Manual user step required: After download set Wireshark and Nmap into Path');
-            // Download Wireshark
-            window.open('https://www.wireshark.org/download.html', '_blank');
-            // Download nmap
-            window.open('https://nmap.org/download.html', '_blank');
-        });
-    </script>
 </body>
 </html>
