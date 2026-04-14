@@ -1,5 +1,6 @@
 const video = document.getElementById("video");
 const canvas = document.getElementById("canvas");
+const debug = document.getElementById("debug");
 
 // ---------------- THREE ----------------
 const renderer = new THREE.WebGLRenderer({ canvas, alpha: true });
@@ -16,49 +17,52 @@ const camera = new THREE.PerspectiveCamera(
 
 camera.position.z = 2;
 
-const geometry = new THREE.BufferGeometry();
-const material = new THREE.PointsMaterial({
-  color: 0x00ff00,
-  size: 0.01
-});
+// simple cube so we KNOW render works
+const geo = new THREE.BoxGeometry();
+const mat = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+const cube = new THREE.Mesh(geo, mat);
+scene.add(cube);
 
-const cloud = new THREE.Points(geometry, material);
-scene.add(cloud);
-
-// ---------------- CAMERA (FORCED SAFE START) ----------------
+// ---------------- CAMERA TEST ----------------
 async function startCamera() {
+
+  debug.innerText = "requesting camera...";
+
   try {
     const stream = await navigator.mediaDevices.getUserMedia({ video: true });
 
+    debug.innerText = "camera stream received";
+
     video.srcObject = stream;
 
-    await new Promise((resolve) => {
-      video.onloadedmetadata = () => {
-        video.play();
-        resolve();
-      };
-    });
+    await video.play();
 
-    console.log("CAMERA STARTED");
+    debug.innerText = "camera playing ✔";
+
+    console.log("CAMERA OK");
+
   } catch (err) {
-    console.error("CAMERA ERROR:", err);
+    debug.innerText = "camera failed: " + err.message;
+    console.error(err);
   }
 }
 
-// ---------------- MAIN ----------------
+// ---------------- LOOP ----------------
+function loop() {
+
+  cube.rotation.y += 0.01;
+
+  renderer.render(scene, camera);
+
+  requestAnimationFrame(loop);
+}
+
+// ---------------- START ----------------
 async function main() {
 
   await startCamera();
 
-  // TEMP DEBUG: confirm loop works BEFORE MediaPipe
-  function loop() {
-
-    // simple rotating test so we know render is alive
-    cloud.rotation.y += 0.01;
-
-    renderer.render(scene, camera);
-    requestAnimationFrame(loop);
-  }
+  debug.innerText = debug.innerText + " | render loop started";
 
   loop();
 }
