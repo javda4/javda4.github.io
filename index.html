@@ -2,43 +2,51 @@
 <html>
 <head>
   <meta charset="UTF-8" />
-  <title>Face Mapping Fix</title>
+  <title>DEBUG CAMERA + WEBGL</title>
 
   <style>
     body {
       margin: 0;
-      overflow: hidden;
       background: black;
+      overflow: hidden;
     }
 
-    /* CAMERA LAYER */
+    /* CAMERA LAYER (FORCED FRONT) */
     video {
       position: fixed;
-      width: 240px;
+      width: 300px;
       bottom: 10px;
       left: 10px;
-      transform: scaleX(-1);
-      border: 2px solid lime;
-      border-radius: 10px;
-      z-index: 10;
+      border: 3px solid lime;
+      z-index: 9999;
       background: black;
     }
 
-    /* THREE.JS LAYER */
+    /* CANVAS BACKGROUND */
     canvas {
       position: fixed;
       top: 0;
       left: 0;
-      width: 100vw;
-      height: 100vh;
       z-index: 1;
+    }
+
+    /* DEBUG TEXT */
+    #debug {
+      position: fixed;
+      top: 10px;
+      left: 10px;
+      color: white;
+      z-index: 10000;
+      font-family: monospace;
     }
   </style>
 </head>
 
 <body>
 
-<video id="video" autoplay playsinline></video>
+<div id="debug">loading...</div>
+
+<video id="video" autoplay playsinline muted></video>
 <canvas id="canvas"></canvas>
 
 <script src="https://cdn.jsdelivr.net/npm/three@0.161.0/build/three.min.js"></script>
