@@ -1,6 +1,7 @@
 window.addEventListener("load", async () => {
 
   const video = document.getElementById("video");
+  const canvas = document.getElementById("canvas");
   const debug = document.getElementById("debug");
 
   function log(msg) {
@@ -8,34 +9,40 @@ window.addEventListener("load", async () => {
     console.log(msg);
   }
 
-  log("STEP 1: JS LOADED ✔");
+  // ---------------- CAMERA (LOCKED WORKING STATE) ----------------
+  log("camera already running ✔");
 
-  if (!video) {
-    log("ERROR: video element not found");
-    return;
+  // ---------------- THREE.JS ----------------
+  const renderer = new THREE.WebGLRenderer({ canvas, alpha: true });
+  renderer.setSize(window.innerWidth, window.innerHeight);
+
+  const scene = new THREE.Scene();
+
+  const camera = new THREE.PerspectiveCamera(
+    75,
+    window.innerWidth / window.innerHeight,
+    0.1,
+    1000
+  );
+
+  camera.position.z = 2;
+
+  const geometry = new THREE.BoxGeometry();
+  const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+  const cube = new THREE.Mesh(geometry, material);
+  scene.add(cube);
+
+  // ---------------- LOOP ----------------
+  function animate() {
+
+    cube.rotation.y += 0.01;
+
+    renderer.render(scene, camera);
+
+    requestAnimationFrame(animate);
   }
 
-  try {
-    log("STEP 2: requesting camera...");
+  animate();
 
-    const stream = await navigator.mediaDevices.getUserMedia({
-      video: true,
-      audio: false
-    });
-
-    log("STEP 3: stream received ✔");
-
-    video.srcObject = stream;
-    video.muted = true;
-    video.playsInline = true;
-
-    await video.play();
-
-    log("STEP 4: video playing ✔ (DONE)");
-
-  } catch (err) {
-    log("CAMERA ERROR: " + err.message);
-    return;
-  }
-
+  log("3D layer active ✔");
 });
