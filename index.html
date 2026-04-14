@@ -2,27 +2,32 @@
 <html>
 <head>
   <meta charset="UTF-8" />
-  <title>DEBUG CAMERA + WEBGL</title>
+  <title>Stable Camera + WebGL</title>
 
   <style>
     body {
       margin: 0;
-      background: black;
       overflow: hidden;
+      background: black;
     }
 
-    /* CAMERA LAYER (FORCED FRONT) */
+    /* CAMERA LAYER */
     video {
       position: fixed;
-      width: 300px;
       bottom: 10px;
       left: 10px;
+      width: 300px;
       border: 3px solid lime;
+      border-radius: 10px;
       z-index: 9999;
-      background: black;
+
+      /* IMPORTANT: prevents hidden rendering issues */
+      display: block;
+      visibility: visible;
+      opacity: 1;
     }
 
-    /* CANVAS BACKGROUND */
+    /* THREE.JS LAYER */
     canvas {
       position: fixed;
       top: 0;
@@ -30,14 +35,14 @@
       z-index: 1;
     }
 
-    /* DEBUG TEXT */
+    /* DEBUG PANEL */
     #debug {
       position: fixed;
       top: 10px;
       left: 10px;
       color: white;
-      z-index: 10000;
       font-family: monospace;
+      z-index: 10000;
     }
   </style>
 </head>
