@@ -7,22 +7,7 @@ const ctx3d = canvas3d.getContext("2d");
 
 const debug = document.getElementById("debug");
 
-// ---------------- DEVICE SAFE RESIZE ----------------
-
-function resizeCanvases() {
-  const w = video.videoWidth;
-  const h = video.videoHeight;
-
-  if (!w || !h) return;
-
-  overlay.width = w;
-  overlay.height = h;
-
-  canvas3d.width = canvas3d.clientWidth;
-  canvas3d.height = canvas3d.clientHeight;
-}
-
-// ---------------- FACEMESH ----------------
+// ---------------- FACE MESH ----------------
 
 const faceMesh = new FaceMesh({
   locateFile: (file) => {
@@ -37,8 +22,21 @@ faceMesh.setOptions({
   minTrackingConfidence: 0.5
 });
 
-// ---------------- 3D PROJECTION ----------------
-// fake "matplotlib-style depth render"
+// ---------------- RESIZE (CRITICAL FIX) ----------------
+
+function resizeAll() {
+
+  // 🔥 USE DISPLAY SIZE (NOT video.videoWidth)
+  const rect = video.getBoundingClientRect();
+
+  overlay.width = rect.width;
+  overlay.height = rect.height;
+
+  canvas3d.width = canvas3d.clientWidth;
+  canvas3d.height = canvas3d.clientHeight;
+}
+
+// ---------------- 3D RENDER ----------------
 
 function draw3D(points) {
   ctx3d.clearRect(0, 0, canvas3d.width, canvas3d.height);
@@ -55,12 +53,10 @@ function draw3D(points) {
 
   for (const p of points) {
 
-    // center coords
     const x = (p.x - 0.5);
     const y = (p.y - 0.5);
     const z = p.z || 0;
 
-    // pseudo 3D projection
     const px = cx + (x * scale) * (1 - z);
     const py = cy + (y * scale) * (1 - z);
 
@@ -80,12 +76,16 @@ faceMesh.onResults((results) => {
 
     const points = results.multiFaceLandmarks[0];
 
+    const rect = video.getBoundingClientRect();
+
     // ---------------- 2D LEFT SIDE ----------------
     ctx.fillStyle = "lime";
 
     for (const p of points) {
-      const x = (1 - p.x) * overlay.width;
-      const y = p.y * overlay.height;
+
+      // 🔥 FIX: mirror + correct display mapping
+      const x = (1 - p.x) * rect.width;
+      const y = p.y * rect.height;
 
       ctx.beginPath();
       ctx.arc(x, y, 2, 0, Math.PI * 2);
@@ -95,7 +95,7 @@ faceMesh.onResults((results) => {
     // ---------------- 3D RIGHT SIDE ----------------
     draw3D(points);
 
-    debug.innerText = "FACE TRACKING ✔ " + points.length;
+    debug.innerText = "FACE DETECTED ✔ " + points.length;
 
   } else {
     debug.innerText = "no face";
@@ -106,7 +106,7 @@ faceMesh.onResults((results) => {
 
 const camera = new Camera(video, {
   onFrame: async () => {
-    resizeCanvases();
+    resizeAll();
     await faceMesh.send({ image: video });
   },
   width: 640,
@@ -118,8 +118,8 @@ camera.start();
 // ---------------- INIT ----------------
 
 video.onloadedmetadata = () => {
-  resizeCanvases();
-  debug.innerText = "split view running ✔";
+  resizeAll();
+  debug.innerText = "running ✔";
 };
 
-window.addEventListener("resize", resizeCanvases);
+window.addEventListener("resize", resizeAll);
