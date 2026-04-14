@@ -1,46 +1,57 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8" />
-<title>Face Landmark Overlay</title>
+<meta charset="UTF-8">
+<title>Face Landmark + 3D Viewer</title>
 
 <style>
+
 body{
-  margin:0;
-  background:black;
+margin:0;
+background:black;
+overflow:hidden;
 }
 
-/* camera feed */
+/* camera */
 video{
-  width:400px;
-  position:fixed;
-  bottom:10px;
-  left:10px;
-  border:3px solid lime;
-  z-index:1;
+position:fixed;
+bottom:10px;
+left:10px;
+width:400px;
+border:3px solid lime;
+z-index:1;
 }
 
-/* drawing overlay */
-canvas{
-  position:fixed;
-  bottom:10px;
-  left:10px;
-  z-index:2;
-  pointer-events:none;
+/* 2D landmark overlay */
+#overlay{
+position:fixed;
+bottom:10px;
+left:10px;
+z-index:2;
+pointer-events:none;
+}
+
+/* 3D viewer */
+#viewer3d{
+position:fixed;
+top:0;
+right:0;
+width:50vw;
+height:100vh;
+z-index:0;
 }
 
 /* debug text */
 #debug{
-  position:fixed;
-  top:10px;
-  left:10px;
-  color:white;
-  font-family:monospace;
-  font-size:16px;
-  z-index:10;
+position:fixed;
+top:10px;
+left:10px;
+color:white;
+font-family:monospace;
+z-index:10;
 }
-</style>
 
+</style>
 </head>
 
 <body>
@@ -50,7 +61,11 @@ canvas{
 <video id="video" autoplay playsinline muted></video>
 <canvas id="overlay"></canvas>
 
+<div id="viewer3d"></div>
+
 <script src="https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14/vision_bundle.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+
 <script src="app.js"></script>
 
 </body>
