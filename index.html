@@ -2,68 +2,67 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Face Tracking Test</title>
+<title>Face Tracking Debug</title>
 
 <style>
-
 body{
 margin:0;
 background:black;
-overflow:hidden;
+font-family:monospace;
 }
 
-/* camera feed */
-#video{
-position:fixed;
-bottom:10px;
-left:10px;
-width:400px;
-border:3px solid lime;
-z-index:1;
-}
-
-/* overlay exactly on top of camera */
-#overlay{
+#cameraBox{
 position:fixed;
 bottom:10px;
 left:10px;
 width:400px;
 height:300px;
-z-index:2;
+}
+
+#video{
+position:absolute;
+width:100%;
+height:100%;
+border:3px solid lime;
+}
+
+#overlay{
+position:absolute;
+top:0;
+left:0;
+width:100%;
+height:100%;
 pointer-events:none;
 }
 
-/* 3D viewer area */
 #viewer3d{
 position:fixed;
-top:0;
 right:0;
+top:0;
 width:50vw;
 height:100vh;
 background:#111;
-z-index:0;
 }
 
-/* debug text */
 #debug{
 position:fixed;
 top:10px;
 left:10px;
 color:white;
-font-family:monospace;
-font-size:16px;
-z-index:10;
+font-size:18px;
 }
-
 </style>
+
 </head>
 
 <body>
 
 <div id="debug">starting...</div>
 
+<div id="cameraBox">
 <video id="video" autoplay playsinline muted></video>
 <canvas id="overlay"></canvas>
+</div>
 
 <div id="viewer3d"></div>
 
