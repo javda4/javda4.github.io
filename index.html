@@ -2,8 +2,12 @@
 <html>
 <head>
   <meta charset="UTF-8" />
-  <title>Face Mapping WebGL</title>
-  <link rel="stylesheet" href="style.css">
+  <title>Face Map</title>
+  <style>
+    body { margin: 0; overflow: hidden; background: black; }
+    video { position: absolute; width: 200px; bottom: 10px; left: 10px; }
+    canvas { width: 100vw; height: 100vh; display: block; }
+  </style>
 </head>
 
 <body>
@@ -11,8 +15,9 @@
 <video id="video" autoplay playsinline></video>
 <canvas id="canvas"></canvas>
 
-<script src="https://cdn.jsdelivr.net/npm/three@0.161.0/build/three.min.js"></script>
 <script type="module" src="app.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/three@0.161.0/build/three.min.js"></script>
 
 </body>
 </html>
