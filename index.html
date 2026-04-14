@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>FaceMesh i</title>
+<title>FaceMesh Device Adaptive</title>
 
 <style>
 body {
@@ -11,14 +11,11 @@ body {
   overflow: hidden;
 }
 
-/* IMPORTANT: only video is mirrored */
+/* VIDEO */
 #video {
   position: fixed;
   bottom: 10px;
   left: 10px;
-
-  width: 400px;
-  height: 300px;
 
   object-fit: cover;
   border: 3px solid lime;
@@ -26,20 +23,17 @@ body {
   transform: scaleX(-1); /* mirror only video */
 }
 
-/* canvas MUST NOT be mirrored */
+/* OVERLAY */
 #overlay {
   position: fixed;
   bottom: 10px;
   left: 10px;
 
-  width: 400px;
-  height: 300px;
-
   pointer-events: none;
   z-index: 2;
 }
 
-/* debug */
+/* DEBUG */
 #debug {
   position: fixed;
   top: 10px;
