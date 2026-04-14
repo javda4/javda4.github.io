@@ -1,50 +1,37 @@
-import vision from "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.0";
+import vision from "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.0/vision_bundle.mjs";
 
-const { FaceLandmarker, FilesetResolver } = vision;
+const {
+  FaceLandmarker,
+  FilesetResolver
+} = vision;
 
 const video = document.getElementById("video");
+const canvas = document.getElementById("canvas");
 
-// --------------------
-// THREE.JS SETUP (matplotlib replacement)
-// --------------------
+const renderer = new THREE.WebGLRenderer({ canvas, alpha: true });
+renderer.setSize(window.innerWidth, window.innerHeight);
+
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
-
-const renderer = new THREE.WebGLRenderer({
-  canvas: document.querySelector("canvas"),
-  alpha: true
-});
-
-renderer.setSize(window.innerWidth, window.innerHeight);
 camera.position.z = 2;
 
 const geometry = new THREE.BufferGeometry();
 const material = new THREE.PointsMaterial({ color: 0x00ff00, size: 0.01 });
 
-const pointCloud = new THREE.Points(geometry, material);
-scene.add(pointCloud);
+const points = new THREE.Points(geometry, material);
+scene.add(points);
 
-// --------------------
-// CAMERA SETUP
-// --------------------
-async function setupCamera() {
-  const stream = await navigator.mediaDevices.getUserMedia({
-    video: { facingMode: "user" }
-  });
-
+// ---------------- CAMERA ----------------
+async function startCamera() {
+  const stream = await navigator.mediaDevices.getUserMedia({ video: true });
   video.srcObject = stream;
 
-  return new Promise(resolve => {
-    video.onloadedmetadata = () => resolve(video);
-  });
+  return new Promise(res => video.onloadedmetadata = res);
 }
 
-// --------------------
-// MAIN LOOP
-// --------------------
-async function run() {
+async function main() {
 
-  await setupCamera();
+  await startCamera();
 
   const fileset = await FilesetResolver.forVisionTasks(
     "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.0/wasm"
@@ -59,7 +46,7 @@ async function run() {
     numFaces: 1
   });
 
-  function animate() {
+  function render() {
 
     const result = landmarker.detectForVideo(video, performance.now());
 
@@ -68,11 +55,7 @@ async function run() {
       const pts = [];
 
       for (const lm of result.faceLandmarks[0]) {
-        pts.push(
-          lm.x - 0.5,
-          -(lm.y - 0.5),
-          lm.z
-        );
+        pts.push(lm.x - 0.5, -(lm.y - 0.5), lm.z);
       }
 
       geometry.setAttribute(
@@ -84,10 +67,10 @@ async function run() {
     geometry.attributes.position.needsUpdate = true;
 
     renderer.render(scene, camera);
-    requestAnimationFrame(animate);
+    requestAnimationFrame(render);
   }
 
-  animate();
+  render();
 }
 
-run();
+main();
