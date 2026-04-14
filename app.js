@@ -3,6 +3,10 @@ const canvas = document.getElementById("overlay");
 const ctx = canvas.getContext("2d");
 const debug = document.getElementById("debug");
 
+// ---------------- DEVICE DETECTION ----------------
+
+const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+
 // ---------------- FACEMESH ----------------
 
 const faceMesh = new FaceMesh({
@@ -18,7 +22,7 @@ faceMesh.setOptions({
   minTrackingConfidence: 0.5
 });
 
-// ---------------- SYNC ----------------
+// ---------------- SYNC SIZE ----------------
 
 function syncCanvasToVideo() {
   const w = video.videoWidth;
@@ -28,6 +32,30 @@ function syncCanvasToVideo() {
 
   canvas.width = w;
   canvas.height = h;
+
+  // ---------------- DEVICE MODE ----------------
+  if (isMobile) {
+
+    const displayWidth = window.innerWidth * 0.9;
+    const displayHeight = displayWidth * (h / w);
+
+    video.style.width = displayWidth + "px";
+    video.style.height = displayHeight + "px";
+
+    canvas.style.width = displayWidth + "px";
+    canvas.style.height = displayHeight + "px";
+
+  } else {
+
+    const displayWidth = 400;
+    const displayHeight = displayWidth * (h / w);
+
+    video.style.width = displayWidth + "px";
+    video.style.height = displayHeight + "px";
+
+    canvas.style.width = displayWidth + "px";
+    canvas.style.height = displayHeight + "px";
+  }
 }
 
 // ---------------- RESULTS ----------------
@@ -42,7 +70,7 @@ faceMesh.onResults((results) => {
 
     for (const p of points) {
 
-      // 🔥 FIX: mirror X because video is flipped in CSS
+      // 🔥 FIX: match mirrored video
       const x = (1 - p.x) * canvas.width;
       const y = p.y * canvas.height;
 
@@ -52,6 +80,7 @@ faceMesh.onResults((results) => {
     }
 
     debug.innerText = "FACE DETECTED ✔ " + points.length;
+
   } else {
     debug.innerText = "no face";
   }
@@ -70,7 +99,15 @@ const camera = new Camera(video, {
 
 camera.start();
 
+// ---------------- INIT ----------------
+
 video.onloadedmetadata = () => {
   syncCanvasToVideo();
   debug.innerText = "camera + facemesh running ✔";
 };
+
+// ---------------- HANDLE ROTATION (iPhone fix) ----------------
+
+window.addEventListener("resize", () => {
+  syncCanvasToVideo();
+});
