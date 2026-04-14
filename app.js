@@ -43,7 +43,7 @@ faceMesh.onResults((results) => {
     for (const p of points) {
       const x = p.x * canvas.width;
       const y = p.y * canvas.height;
-
+      
       ctx.beginPath();
       ctx.arc(x, y, 2, 0, Math.PI * 2);
       ctx.fill();
