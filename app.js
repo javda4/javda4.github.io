@@ -1,30 +1,12 @@
-let FaceLandmarker, FilesetResolver;
+import vision from "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.0/vision_bundle.mjs";
 
-// --------------------
-// SAFE IMPORT (fallback system)
-// --------------------
-try {
-  const vision = await import("./assets/vision_bundle.js");
-  FaceLandmarker = vision.FaceLandmarker;
-  FilesetResolver = vision.FilesetResolver;
-} catch (e) {
-  console.warn("Local vision_bundle failed, using CDN fallback.");
+const { FaceLandmarker, FilesetResolver } = vision;
 
-  const vision = await import(
-    "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.0/vision_bundle.mjs"
-  );
-
-  FaceLandmarker = vision.FaceLandmarker;
-  FilesetResolver = vision.FilesetResolver;
-}
-
-// -------------------- DOM
-// --------------------
+// ---------------- DOM ----------------
 const video = document.getElementById("video");
 const canvas = document.getElementById("canvas");
 
-// -------------------- THREE.JS (Matplotlib replacement)
-// --------------------
+// ---------------- THREE.JS (Matplotlib replacement) ----------------
 const renderer = new THREE.WebGLRenderer({ canvas, alpha: true });
 renderer.setSize(window.innerWidth, window.innerHeight);
 
@@ -45,11 +27,10 @@ const material = new THREE.PointsMaterial({
   size: 0.01
 });
 
-const cloud = new THREE.Points(geometry, material);
-scene.add(cloud);
+const points = new THREE.Points(geometry, material);
+scene.add(points);
 
-// -------------------- CAMERA (OpenCV replacement)
-// --------------------
+// ---------------- CAMERA (OpenCV replacement) ----------------
 async function startCamera() {
   const stream = await navigator.mediaDevices.getUserMedia({
     video: true
@@ -57,16 +38,17 @@ async function startCamera() {
 
   video.srcObject = stream;
 
-  return new Promise(res => video.onloadedmetadata = res);
+  return new Promise(resolve => {
+    video.onloadedmetadata = resolve;
+  });
 }
 
-// -------------------- MAIN LOOP (Python while True equivalent)
-// --------------------
+// ---------------- MAIN LOOP ----------------
 async function main() {
 
   await startCamera();
 
-  // REQUIRED MediaPipe runtime (cannot be local-only safely)
+  // MediaPipe runtime (CDN = REQUIRED since you have no wasm folder)
   const fileset = await FilesetResolver.forVisionTasks(
     "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.0/wasm"
   );
@@ -83,16 +65,21 @@ async function main() {
 
     const result = landmarker.detectForVideo(video, performance.now());
 
-    let points = [];
+    let pts = [];
 
-    if (result.faceLandmarks.length > 0) {
+    if (result.faceLandmarks && result.faceLandmarks.length > 0) {
+
       for (const lm of result.faceLandmarks[0]) {
-        points.push(lm.x - 0.5, -(lm.y - 0.5), lm.z);
+        pts.push(
+          lm.x - 0.5,
+          -(lm.y - 0.5),
+          lm.z
+        );
       }
 
       geometry.setAttribute(
         "position",
-        new THREE.Float32BufferAttribute(points, 3)
+        new THREE.Float32BufferAttribute(pts, 3)
       );
 
       geometry.attributes.position.needsUpdate = true;
