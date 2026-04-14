@@ -1,11 +1,26 @@
 const video = document.getElementById("video");
-const canvas = document.getElementById("overlay");
-const ctx = canvas.getContext("2d");
+const overlay = document.getElementById("overlay");
+const ctx = overlay.getContext("2d");
+
+const canvas3d = document.getElementById("canvas3d");
+const ctx3d = canvas3d.getContext("2d");
+
 const debug = document.getElementById("debug");
 
-// ---------------- DEVICE DETECTION ----------------
+// ---------------- DEVICE SAFE RESIZE ----------------
 
-const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+function resizeCanvases() {
+  const w = video.videoWidth;
+  const h = video.videoHeight;
+
+  if (!w || !h) return;
+
+  overlay.width = w;
+  overlay.height = h;
+
+  canvas3d.width = canvas3d.clientWidth;
+  canvas3d.height = canvas3d.clientHeight;
+}
 
 // ---------------- FACEMESH ----------------
 
@@ -22,64 +37,65 @@ faceMesh.setOptions({
   minTrackingConfidence: 0.5
 });
 
-// ---------------- SYNC SIZE ----------------
+// ---------------- 3D PROJECTION ----------------
+// fake "matplotlib-style depth render"
 
-function syncCanvasToVideo() {
-  const w = video.videoWidth;
-  const h = video.videoHeight;
+function draw3D(points) {
+  ctx3d.clearRect(0, 0, canvas3d.width, canvas3d.height);
 
-  if (!w || !h) return;
+  const w = canvas3d.width;
+  const h = canvas3d.height;
 
-  canvas.width = w;
-  canvas.height = h;
+  const cx = w / 2;
+  const cy = h / 2;
 
-  // ---------------- DEVICE MODE ----------------
-  if (isMobile) {
+  const scale = Math.min(w, h) * 0.6;
 
-    const displayWidth = window.innerWidth * 0.9;
-    const displayHeight = displayWidth * (h / w);
+  ctx3d.fillStyle = "cyan";
 
-    video.style.width = displayWidth + "px";
-    video.style.height = displayHeight + "px";
+  for (const p of points) {
 
-    canvas.style.width = displayWidth + "px";
-    canvas.style.height = displayHeight + "px";
+    // center coords
+    const x = (p.x - 0.5);
+    const y = (p.y - 0.5);
+    const z = p.z || 0;
 
-  } else {
+    // pseudo 3D projection
+    const px = cx + (x * scale) * (1 - z);
+    const py = cy + (y * scale) * (1 - z);
 
-    const displayWidth = 400;
-    const displayHeight = displayWidth * (h / w);
-
-    video.style.width = displayWidth + "px";
-    video.style.height = displayHeight + "px";
-
-    canvas.style.width = displayWidth + "px";
-    canvas.style.height = displayHeight + "px";
+    ctx3d.beginPath();
+    ctx3d.arc(px, py, 2, 0, Math.PI * 2);
+    ctx3d.fill();
   }
 }
 
 // ---------------- RESULTS ----------------
 
 faceMesh.onResults((results) => {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  ctx.clearRect(0, 0, overlay.width, overlay.height);
 
   if (results.multiFaceLandmarks?.length > 0) {
+
     const points = results.multiFaceLandmarks[0];
 
+    // ---------------- 2D LEFT SIDE ----------------
     ctx.fillStyle = "lime";
 
     for (const p of points) {
-
-      // 🔥 FIX: match mirrored video
-      const x = (1 - p.x) * canvas.width;
-      const y = p.y * canvas.height;
+      const x = (1 - p.x) * overlay.width;
+      const y = p.y * overlay.height;
 
       ctx.beginPath();
       ctx.arc(x, y, 2, 0, Math.PI * 2);
       ctx.fill();
     }
 
-    debug.innerText = "FACE DETECTED ✔ " + points.length;
+    // ---------------- 3D RIGHT SIDE ----------------
+    draw3D(points);
+
+    debug.innerText = "FACE TRACKING ✔ " + points.length;
 
   } else {
     debug.innerText = "no face";
@@ -90,7 +106,7 @@ faceMesh.onResults((results) => {
 
 const camera = new Camera(video, {
   onFrame: async () => {
-    syncCanvasToVideo();
+    resizeCanvases();
     await faceMesh.send({ image: video });
   },
   width: 640,
@@ -102,12 +118,8 @@ camera.start();
 // ---------------- INIT ----------------
 
 video.onloadedmetadata = () => {
-  syncCanvasToVideo();
-  debug.innerText = "camera + facemesh running ✔";
+  resizeCanvases();
+  debug.innerText = "split view running ✔";
 };
 
-// ---------------- HANDLE ROTATION (iPhone fix) ----------------
-
-window.addEventListener("resize", () => {
-  syncCanvasToVideo();
-});
+window.addEventListener("resize", resizeCanvases);
