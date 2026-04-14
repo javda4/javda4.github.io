@@ -1,75 +1,66 @@
 const video = document.getElementById("video");
+const canvas = document.getElementById("overlay");
+const ctx = canvas.getContext("2d");
 const debug = document.getElementById("debug");
 
-let landmarker;
+// resize canvas to match display
+canvas.width = 400;
+canvas.height = 300;
 
-function log(msg){
-  debug.innerText = msg;
-  console.log(msg);
-}
+// ---------------- FACEMESH ----------------
 
-async function startCamera(){
-
-  log("requesting camera...");
-
-  const stream = await navigator.mediaDevices.getUserMedia({
-    video:true,
-    audio:false
-  });
-
-  video.srcObject = stream;
-
-  await video.play();
-
-  log("camera ready ✔");
-}
-
-async function loadModel(){
-
-  log("loading vision wasm...");
-
-  const fileset = await FilesetResolver.forVisionTasks(
-    "./assets/wasm"
-  );
-
-  log("loading face model...");
-
-  landmarker = await FaceLandmarker.createFromOptions(fileset,{
-    baseOptions:{
-      modelAssetPath:"./assets/face_landmarker.task"
-    },
-    runningMode:"VIDEO",
-    numFaces:1
-  });
-
-  log("model loaded ✔");
-}
-
-function loop(){
-
-  if(landmarker && video.readyState===4){
-
-    const result = landmarker.detectForVideo(video,performance.now());
-
-    if(result.faceLandmarks && result.faceLandmarks.length>0){
-
-      log("FACE DETECTED ✔ points: "+result.faceLandmarks[0].length);
-
-    }else{
-
-      log("no face detected");
-    }
+const faceMesh = new FaceMesh({
+  locateFile: (file) => {
+    return `https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/${file}`;
   }
+});
 
-  requestAnimationFrame(loop);
-}
+faceMesh.setOptions({
+  maxNumFaces: 1,
+  refineLandmarks: true,
+  minDetectionConfidence: 0.5,
+  minTrackingConfidence: 0.5
+});
 
-async function main(){
+// ---------------- RESULTS ----------------
 
-  await startCamera();
-  await loadModel();
+faceMesh.onResults((results) => {
 
-  loop();
-}
+  ctx.clearRect(0,0,canvas.width,canvas.height);
 
-main();
+  if(results.multiFaceLandmarks.length > 0){
+
+    const points = results.multiFaceLandmarks[0];
+
+    ctx.fillStyle = "lime";
+
+    for(const p of points){
+
+      const x = p.x * canvas.width;
+      const y = p.y * canvas.height;
+
+      ctx.beginPath();
+      ctx.arc(x,y,2,0,Math.PI*2);
+      ctx.fill();
+    }
+
+    debug.innerText = "FACE DETECTED ✔ " + points.length;
+
+  } else {
+    debug.innerText = "no face";
+  }
+});
+
+// ---------------- CAMERA ----------------
+
+const camera = new Camera(video, {
+  onFrame: async () => {
+    await faceMesh.send({image: video});
+  },
+  width: 640,
+  height: 480
+});
+
+camera.start();
+
+debug.innerText = "camera + facemesh running ✔";
