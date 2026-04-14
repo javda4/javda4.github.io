@@ -1,12 +1,16 @@
-import vision from "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.0/vision_bundle.mjs";
-
-const { FaceLandmarker, FilesetResolver } = vision;
-
-// ---------------- DOM ----------------
 const video = document.getElementById("video");
 const canvas = document.getElementById("canvas");
 
-// ---------------- THREE.JS (Matplotlib replacement) ----------------
+// -------------------- CAMERA (always runs first)
+// --------------------
+async function startCamera() {
+  const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+  video.srcObject = stream;
+  await video.play();
+}
+
+// -------------------- THREE.JS (matplotlib replacement)
+// --------------------
 const renderer = new THREE.WebGLRenderer({ canvas, alpha: true });
 renderer.setSize(window.innerWidth, window.innerHeight);
 
@@ -30,25 +34,42 @@ const material = new THREE.PointsMaterial({
 const points = new THREE.Points(geometry, material);
 scene.add(points);
 
-// ---------------- CAMERA (OpenCV replacement) ----------------
-async function startCamera() {
-  const stream = await navigator.mediaDevices.getUserMedia({
-    video: true
-  });
+// -------------------- LOAD MEDIA PIPE SAFELY
+// --------------------
+let FaceLandmarker;
+let FilesetResolver;
 
-  video.srcObject = stream;
+async function loadMediaPipe() {
+  try {
+    const vision = await import(
+      "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.0/vision_bundle.mjs"
+    );
 
-  return new Promise(resolve => {
-    video.onloadedmetadata = resolve;
-  });
+    FaceLandmarker = vision.FaceLandmarker;
+    FilesetResolver = vision.FilesetResolver;
+
+    console.log("MediaPipe loaded");
+  } catch (e) {
+    console.error("MediaPipe failed:", e);
+    return false;
+  }
+
+  return true;
 }
 
-// ---------------- MAIN LOOP ----------------
+// -------------------- MAIN LOOP
+// --------------------
 async function main() {
 
   await startCamera();
 
-  // MediaPipe runtime (CDN = REQUIRED since you have no wasm folder)
+  const mpOK = await loadMediaPipe();
+
+  if (!mpOK) {
+    console.warn("Running camera only mode");
+    return;
+  }
+
   const fileset = await FilesetResolver.forVisionTasks(
     "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.0/wasm"
   );
@@ -67,14 +88,9 @@ async function main() {
 
     let pts = [];
 
-    if (result.faceLandmarks && result.faceLandmarks.length > 0) {
-
+    if (result.faceLandmarks?.length > 0) {
       for (const lm of result.faceLandmarks[0]) {
-        pts.push(
-          lm.x - 0.5,
-          -(lm.y - 0.5),
-          lm.z
-        );
+        pts.push(lm.x - 0.5, -(lm.y - 0.5), lm.z);
       }
 
       geometry.setAttribute(
