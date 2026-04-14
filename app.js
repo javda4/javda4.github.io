@@ -4,108 +4,153 @@ const ctx = canvas.getContext("2d");
 const debug = document.getElementById("debug");
 
 let landmarker;
+let points3D;
 
-function log(msg){
-  debug.innerText = msg;
-  console.log(msg);
-}
+// ---------------- THREE.JS SETUP ----------------
+
+const scene = new THREE.Scene();
+
+const camera3D = new THREE.PerspectiveCamera(
+75,
+window.innerWidth/window.innerHeight,
+0.1,
+1000
+);
+
+camera3D.position.z = 2;
+
+const renderer = new THREE.WebGLRenderer();
+renderer.setSize(window.innerWidth/2, window.innerHeight);
+
+document.getElementById("viewer3d").appendChild(renderer.domElement);
+
+// create point cloud
+const geometry = new THREE.BufferGeometry();
+const vertices = new Float32Array(478 * 3);
+
+geometry.setAttribute(
+"position",
+new THREE.BufferAttribute(vertices,3)
+);
+
+const material = new THREE.PointsMaterial({
+color:0x00ff00,
+size:0.01
+});
+
+points3D = new THREE.Points(geometry,material);
+scene.add(points3D);
 
 // ---------------- CAMERA ----------------
+
 async function startCamera(){
 
-  log("requesting camera...");
+const stream = await navigator.mediaDevices.getUserMedia({
+video:true,
+audio:false
+});
 
-  const stream = await navigator.mediaDevices.getUserMedia({
-    video:true,
-    audio:false
-  });
+video.srcObject = stream;
+await video.play();
 
-  video.srcObject = stream;
+canvas.width = video.videoWidth;
+canvas.height = video.videoHeight;
 
-  await video.play();
-
-  canvas.width = video.videoWidth;
-  canvas.height = video.videoHeight;
-
-  log("camera ready ✔");
+debug.innerText="camera ready ✔";
 }
-
 
 // ---------------- LOAD MODEL ----------------
+
 async function loadModel(){
 
-  log("loading vision wasm...");
+const fileset = await FilesetResolver.forVisionTasks(
+"https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14/wasm"
+);
 
-  const fileset = await FilesetResolver.forVisionTasks(
-    "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14/wasm"
-  );
+landmarker = await FaceLandmarker.createFromOptions(fileset,{
+baseOptions:{
+modelAssetPath:"./assets/face_landmarker.task"
+},
+runningMode:"VIDEO",
+numFaces:1
+});
 
-  log("loading face model...");
-
-  landmarker = await FaceLandmarker.createFromOptions(fileset,{
-    baseOptions:{
-      modelAssetPath:"./assets/face_landmarker.task"
-    },
-    runningMode:"VIDEO",
-    numFaces:1
-  });
-
-  log("model loaded ✔");
+debug.innerText="model loaded ✔";
 }
 
+// ---------------- DRAW 2D LANDMARKS ----------------
 
-// ---------------- DRAW LANDMARKS ----------------
-function drawFace(points){
+function draw2D(points){
 
-  ctx.clearRect(0,0,canvas.width,canvas.height);
+ctx.clearRect(0,0,canvas.width,canvas.height);
 
-  ctx.fillStyle="lime";
+ctx.fillStyle="lime";
 
-  for(const p of points){
+for(const p of points){
 
-    const x = p.x * canvas.width;
-    const y = p.y * canvas.height;
+const x=p.x*canvas.width;
+const y=p.y*canvas.height;
 
-    ctx.beginPath();
-    ctx.arc(x,y,2,0,Math.PI*2);
-    ctx.fill();
-  }
+ctx.beginPath();
+ctx.arc(x,y,2,0,Math.PI*2);
+ctx.fill();
+
 }
 
+}
+
+// ---------------- UPDATE 3D POINT CLOUD ----------------
+
+function update3D(points){
+
+const positions = points3D.geometry.attributes.position.array;
+
+for(let i=0;i<points.length;i++){
+
+positions[i*3] = (points[i].x - 0.5);
+positions[i*3+1] = -(points[i].y - 0.5);
+positions[i*3+2] = points[i].z;
+
+}
+
+points3D.geometry.attributes.position.needsUpdate = true;
+
+}
 
 // ---------------- MAIN LOOP ----------------
+
 function loop(){
 
-  if(landmarker && video.readyState===4){
+if(landmarker && video.readyState===4){
 
-    const result = landmarker.detectForVideo(video,performance.now());
+const result = landmarker.detectForVideo(video,performance.now());
 
-    if(result.faceLandmarks && result.faceLandmarks.length>0){
+if(result.faceLandmarks && result.faceLandmarks.length>0){
 
-      const points = result.faceLandmarks[0];
+const points=result.faceLandmarks[0];
 
-      drawFace(points);
+draw2D(points);
+update3D(points);
 
-      debug.innerText="FACE DETECTED ✔ points: "+points.length;
+debug.innerText="FACE DETECTED ✔ "+points.length+" points";
 
-    }else{
-
-      ctx.clearRect(0,0,canvas.width,canvas.height);
-      debug.innerText="no face detected";
-    }
-  }
-
-  requestAnimationFrame(loop);
 }
 
+}
 
-// ---------------- MAIN ----------------
+renderer.render(scene,camera3D);
+
+requestAnimationFrame(loop);
+}
+
+// ---------------- START ----------------
+
 async function main(){
 
-  await startCamera();
-  await loadModel();
+await startCamera();
+await loadModel();
 
-  loop();
+loop();
 }
 
 main();
