@@ -1,15 +1,43 @@
 <!DOCTYPE html>
 <html>
+<head>
+<meta charset="UTF-8" />
+<title>Face Detection Test</title>
+
+<style>
+body {
+  margin:0;
+  background:black;
+}
+
+video{
+  width:400px;
+  position:fixed;
+  bottom:10px;
+  left:10px;
+  border:3px solid lime;
+  z-index:9999;
+}
+
+#debug{
+  position:fixed;
+  top:10px;
+  left:10px;
+  color:white;
+  font-family:monospace;
+  z-index:10000;
+}
+</style>
+
+</head>
+
 <body>
 
-<video id="video" autoplay playsinline></video>
+<div id="debug">starting...</div>
+<video id="video" autoplay playsinline muted></video>
 
-<script>
-(async () => {
-  const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-  document.getElementById("video").srcObject = stream;
-})();
-</script>
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14/vision_bundle.js"></script>
+<script src="app.js"></script>
 
 </body>
 </html>
