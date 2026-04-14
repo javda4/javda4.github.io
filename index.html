@@ -1,6 +1,15 @@
 <!DOCTYPE html>
 <html>
-  <body>
-    <h1>GitHub Pages is working 🚀</h1>
-  </body>
+<body>
+
+<video id="video" autoplay playsinline></video>
+
+<script>
+(async () => {
+  const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+  document.getElementById("video").srcObject = stream;
+})();
+</script>
+
+</body>
 </html>
