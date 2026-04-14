@@ -5,16 +5,20 @@
   <title>Face Mapping Web</title>
 
   <style>
-    body { margin: 0; overflow: hidden; background: black; }
+    body {
+      margin: 0;
+      overflow: hidden;
+      background: black;
+    }
 
     video {
       position: absolute;
-      width: 220px;
+      width: 200px;
       bottom: 10px;
       left: 10px;
       transform: scaleX(-1);
       border: 2px solid #00ff00;
-      border-radius: 10px;
+      border-radius: 8px;
     }
 
     canvas {
@@ -30,12 +34,10 @@
 <video id="video" autoplay playsinline></video>
 <canvas id="canvas"></canvas>
 
-<!-- Local Three.js -->
+<!-- Three.js (LOCAL) -->
 <script src="./assets/three.min.js"></script>
 
-<!-- Local Vision bundle (optional fallback handled in JS) -->
-<script type="module" src="./assets/vision_bundle.js"></script>
-
+<!-- App -->
 <script type="module" src="app.js"></script>
 
 </body>
