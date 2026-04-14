@@ -1,37 +1,41 @@
-const video = document.getElementById("video");
-const debug = document.getElementById("debug");
+window.addEventListener("load", async () => {
 
-async function startCamera() {
-  debug.innerText = "requesting camera...";
+  const video = document.getElementById("video");
+  const debug = document.getElementById("debug");
+
+  function log(msg) {
+    debug.innerText = msg;
+    console.log(msg);
+  }
+
+  log("STEP 1: JS LOADED ✔");
+
+  if (!video) {
+    log("ERROR: video element not found");
+    return;
+  }
 
   try {
+    log("STEP 2: requesting camera...");
+
     const stream = await navigator.mediaDevices.getUserMedia({
       video: true,
       audio: false
     });
 
-    debug.innerText = "stream received";
+    log("STEP 3: stream received ✔");
 
     video.srcObject = stream;
-
     video.muted = true;
     video.playsInline = true;
 
     await video.play();
 
-    debug.innerText = "video playing ✔";
+    log("STEP 4: video playing ✔ (DONE)");
 
-  } catch (e) {
-    debug.innerText = "FAILED: " + e.message;
-    console.error(e);
+  } catch (err) {
+    log("CAMERA ERROR: " + err.message);
+    return;
   }
-}
 
-// HARD DEBUG LOOP
-setInterval(() => {
-  debug.innerText =
-    "readyState=" + video.readyState +
-    " | size=" + video.videoWidth + "x" + video.videoHeight;
-}, 1000);
-
-startCamera();
+});
