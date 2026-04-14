@@ -1,48 +1,37 @@
-window.addEventListener("load", async () => {
+const video = document.getElementById("video");
+const debug = document.getElementById("debug");
 
-  const video = document.getElementById("video");
-  const canvas = document.getElementById("canvas");
-  const debug = document.getElementById("debug");
+async function startCamera() {
+  debug.innerText = "requesting camera...";
 
-  function log(msg) {
-    debug.innerText = msg;
-    console.log(msg);
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({
+      video: true,
+      audio: false
+    });
+
+    debug.innerText = "stream received";
+
+    video.srcObject = stream;
+
+    video.muted = true;
+    video.playsInline = true;
+
+    await video.play();
+
+    debug.innerText = "video playing ✔";
+
+  } catch (e) {
+    debug.innerText = "FAILED: " + e.message;
+    console.error(e);
   }
+}
 
-  // ---------------- CAMERA (LOCKED WORKING STATE) ----------------
-  log("camera already running ✔");
+// HARD DEBUG LOOP
+setInterval(() => {
+  debug.innerText =
+    "readyState=" + video.readyState +
+    " | size=" + video.videoWidth + "x" + video.videoHeight;
+}, 1000);
 
-  // ---------------- THREE.JS ----------------
-  const renderer = new THREE.WebGLRenderer({ canvas, alpha: true });
-  renderer.setSize(window.innerWidth, window.innerHeight);
-
-  const scene = new THREE.Scene();
-
-  const camera = new THREE.PerspectiveCamera(
-    75,
-    window.innerWidth / window.innerHeight,
-    0.1,
-    1000
-  );
-
-  camera.position.z = 2;
-
-  const geometry = new THREE.BoxGeometry();
-  const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
-  const cube = new THREE.Mesh(geometry, material);
-  scene.add(cube);
-
-  // ---------------- LOOP ----------------
-  function animate() {
-
-    cube.rotation.y += 0.01;
-
-    renderer.render(scene, camera);
-
-    requestAnimationFrame(animate);
-  }
-
-  animate();
-
-  log("3D layer active ✔");
-});
+startCamera();
