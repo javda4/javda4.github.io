@@ -4,9 +4,8 @@ const ctx = canvas.getContext("2d");
 const debug = document.getElementById("debug");
 
 let landmarker;
-let points3D;
 
-// ---------------- THREE.JS SETUP ----------------
+// ---------------- THREE.JS ----------------
 
 const scene = new THREE.Scene();
 
@@ -26,7 +25,7 @@ document.getElementById("viewer3d").appendChild(renderer.domElement);
 
 // create point cloud
 const geometry = new THREE.BufferGeometry();
-const vertices = new Float32Array(478 * 3);
+const vertices = new Float32Array(478*3);
 
 geometry.setAttribute(
 "position",
@@ -38,8 +37,9 @@ color:0x00ff00,
 size:0.01
 });
 
-points3D = new THREE.Points(geometry,material);
-scene.add(points3D);
+const facePoints = new THREE.Points(geometry,material);
+scene.add(facePoints);
+
 
 // ---------------- CAMERA ----------------
 
@@ -51,13 +51,17 @@ audio:false
 });
 
 video.srcObject = stream;
+
 await video.play();
 
+// ensure overlay matches video
 canvas.width = video.videoWidth;
 canvas.height = video.videoHeight;
 
 debug.innerText="camera ready ✔";
+
 }
+
 
 // ---------------- LOAD MODEL ----------------
 
@@ -76,7 +80,9 @@ numFaces:1
 });
 
 debug.innerText="model loaded ✔";
+
 }
+
 
 // ---------------- DRAW 2D LANDMARKS ----------------
 
@@ -99,23 +105,25 @@ ctx.fill();
 
 }
 
-// ---------------- UPDATE 3D POINT CLOUD ----------------
+
+// ---------------- UPDATE 3D ----------------
 
 function update3D(points){
 
-const positions = points3D.geometry.attributes.position.array;
+const positions = facePoints.geometry.attributes.position.array;
 
 for(let i=0;i<points.length;i++){
 
-positions[i*3] = (points[i].x - 0.5);
-positions[i*3+1] = -(points[i].y - 0.5);
+positions[i*3] = (points[i].x-0.5);
+positions[i*3+1] = -(points[i].y-0.5);
 positions[i*3+2] = points[i].z;
 
 }
 
-points3D.geometry.attributes.position.needsUpdate = true;
+facePoints.geometry.attributes.position.needsUpdate = true;
 
 }
+
 
 // ---------------- MAIN LOOP ----------------
 
@@ -132,7 +140,7 @@ const points=result.faceLandmarks[0];
 draw2D(points);
 update3D(points);
 
-debug.innerText="FACE DETECTED ✔ "+points.length+" points";
+debug.innerText="FACE DETECTED ✔ "+points.length;
 
 }
 
@@ -141,7 +149,9 @@ debug.innerText="FACE DETECTED ✔ "+points.length+" points";
 renderer.render(scene,camera3D);
 
 requestAnimationFrame(loop);
+
 }
+
 
 // ---------------- START ----------------
 
@@ -151,6 +161,7 @@ await startCamera();
 await loadModel();
 
 loop();
+
 }
 
 main();
