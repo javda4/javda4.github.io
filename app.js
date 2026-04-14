@@ -1,56 +1,70 @@
 const video = document.getElementById("video");
 const debug = document.getElementById("debug");
 
+let landmarker;
+
+function log(msg) {
+  debug.innerText = msg;
+  console.log(msg);
+}
+
 async function startCamera() {
-  debug.innerText = "requesting camera...";
+  const stream = await navigator.mediaDevices.getUserMedia({
+    video: true,
+    audio: false
+  });
 
-  try {
-    const stream = await navigator.mediaDevices.getUserMedia({
-      video: true,
-      audio: false
-    });
+  video.srcObject = stream;
+  await video.play();
 
-    debug.innerText = "stream received";
-
-    video.srcObject = stream;
-
-    video.muted = true;
-    video.playsInline = true;
-
-    await video.play();
-
-    debug.innerText = "video playing ✔";
-
-  } catch (e) {
-    debug.innerText = "FAILED: " + e.message;
-    console.error(e);
-  }
+  log("camera ready ✔");
 }
 
-// HARD DEBUG LOOP
-setInterval(() => {
-  debug.innerText =
-    "readyState=" + video.readyState +
-    " | size=" + video.videoWidth + "x" + video.videoHeight;
-}, 1000);
+// ---------------- LOAD FACE MODEL ----------------
+async function loadModel() {
 
-startCamera();
+  log("loading model...");
 
-const testCanvas = document.createElement("canvas");
-const ctx = testCanvas.getContext("2d");
+  const fileset = await FilesetResolver.forVisionTasks(
+    "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.0/wasm"
+  );
 
-function checkFrame() {
-  if (video.readyState === 4) {
+  landmarker = await FaceLandmarker.createFromOptions(fileset, {
+    baseOptions: {
+      modelAssetPath:
+        "https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/1/face_landmarker.task"
+    },
+    runningMode: "VIDEO",
+    numFaces: 1
+  });
 
-    testCanvas.width = video.videoWidth;
-    testCanvas.height = video.videoHeight;
-
-    ctx.drawImage(video, 0, 0);
-
-    const frame = ctx.getImageData(0, 0, 10, 10);
-    debug.innerText =
-      "frame OK ✔ pixel[0]=" + frame.data[0];
-  }
+  log("model loaded ✔");
 }
 
-setInterval(checkFrame, 500);
+// ---------------- DETECTION LOOP ----------------
+function loop() {
+
+  if (landmarker && video.readyState === 4) {
+
+    const result = landmarker.detectForVideo(video, performance.now());
+
+    if (result.faceLandmarks && result.faceLandmarks.length > 0) {
+      log("FACE DETECTED ✔ " + result.faceLandmarks[0].length + " points");
+    } else {
+      log("no face detected...");
+    }
+  }
+
+  requestAnimationFrame(loop);
+}
+
+// ---------------- MAIN ----------------
+async function main() {
+
+  await startCamera();
+  await loadModel();
+
+  loop();
+}
+
+main();
