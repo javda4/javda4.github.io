@@ -15,7 +15,7 @@ const faceMesh = new FaceMesh({
 });
 
 faceMesh.setOptions({
-  maxNumFaces: 1,
+  maxNumFaces: 3,
   refineLandmarks: true,
   minDetectionConfidence: 0.5,
   minTrackingConfidence: 0.5
@@ -71,7 +71,8 @@ faceMesh.onResults((results) => {
   ctx.clearRect(0, 0, overlay.width, overlay.height);
 
   if (results.multiFaceLandmarks?.length > 0) {
-    const points = results.multiFaceLandmarks[0];
+
+  for (const points of results.multiFaceLandmarks) {
 
     const w = overlay.width;
     const h = overlay.height;
@@ -80,7 +81,6 @@ faceMesh.onResults((results) => {
 
     for (const p of points) {
 
-      // 🔥 FINAL FIX: PURE VIDEO NORMALIZED SPACE
       const x = (1 - p.x) * w;
       const y = p.y * h;
 
@@ -91,9 +91,11 @@ faceMesh.onResults((results) => {
 
     draw3D(points);
 
-    debug.innerText = "FACE DETECTED ✔ " + points.length;
+  }
 
-  } else {
+  debug.innerText = "FACES DETECTED ✔ " + results.multiFaceLandmarks.length;
+
+} else {
     debug.innerText = "no face";
   }
 });
