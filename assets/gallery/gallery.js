@@ -156,6 +156,16 @@
   const CYCLE_LENGTH = 5;
   const PANEL_IMAGE_OVERRIDES = { 9: 5 };
 
+  // Panels speed up and turn slightly more transparent as they swing in
+  // front of the hero copy. "Frontness" runs 0 (at the text plane or
+  // behind it) to 1 (directly facing the camera), so both effects ease in
+  // and out smoothly with no jump where a panel crosses into the front layer.
+  const BASE_ANGULAR_SPEED = 0.08; // rad/s, the drum's steady rotation
+  const FRONT_SPEED_BOOST = 0.75; // up to +75% speed at the very front
+  const BACK_OPACITY = 0.85;
+  const FRONT_OPACITY = 0.7; // lowest opacity, directly in front of the text
+  const DRUM_RADIUS = 5;
+
   const panels = Array.from({ length: 16 }, function (_, index) {
     const textureIndex =
       index in PANEL_IMAGE_OVERRIDES
@@ -163,7 +173,7 @@
         : index % CYCLE_LENGTH;
     const material = new THREE.MeshBasicMaterial({
       map: textures[textureIndex],
-      opacity: 0.85,
+      opacity: BACK_OPACITY,
       side: THREE.DoubleSide,
       toneMapped: false,
       transparent: true,
@@ -171,6 +181,7 @@
     const panel = new THREE.Mesh(geometry, material);
     panel.position.y = (index - 8) * 2.4;
     panel.rotation.y = (index / 16) * Math.PI * 4;
+    panel.userData.frontness = 0;
     gallery.add(panel);
     return panel;
   });
@@ -179,12 +190,22 @@
     if (time === undefined) time = performance.now();
     const safeSpeed = clamp(settings.speed, 0, 3);
     const safeScale = clamp(settings.scale, 0.7, 1.35);
+    let dt = 0;
     if (previousTime) {
-      elapsed += Math.min((time - previousTime) / 1000, 0.05) * safeSpeed;
+      dt = Math.min((time - previousTime) / 1000, 0.05) * safeSpeed;
+      elapsed += dt;
     }
     previousTime = time;
-    gallery.rotation.y = elapsed * 0.08;
+    gallery.rotation.y = elapsed * BASE_ANGULAR_SPEED;
     gallery.scale.setScalar(safeScale);
+
+    // Per-panel extra orbit speed and opacity, driven by last frame's
+    // frontness (one frame of lag is imperceptible at these speeds).
+    panels.forEach(function (panel) {
+      const f = panel.userData.frontness;
+      panel.rotation.y += dt * BASE_ANGULAR_SPEED * FRONT_SPEED_BOOST * f;
+      panel.material.opacity = BACK_OPACITY - (BACK_OPACITY - FRONT_OPACITY) * f;
+    });
 
     if (!splitFront) {
       rendererBack.render(scene, camera);
@@ -195,6 +216,9 @@
     panels.forEach(function (panel) {
       worldPanelCenter.copy(localPanelCenter).applyMatrix4(panel.matrixWorld);
       panel.userData.inFront = worldPanelCenter.z > TEXT_DEPTH_Z;
+      panel.userData.frontness = clamp(
+        (worldPanelCenter.z - TEXT_DEPTH_Z) / (DRUM_RADIUS * safeScale), 0, 1
+      );
     });
 
     panels.forEach(function (panel) {
