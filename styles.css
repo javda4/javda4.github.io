@@ -1541,26 +1541,10 @@ a.involved-card.card-photo:focus-visible {
   .pillar-card.card-photo { min-height: 360px; }
 }
 
-/* ---------- Jason photo / Our Dream (threeweb_4) ---------- */
-
-.jason-photo {
-  margin: 0;
-  background: var(--navy);
-}
-
-.jason-photo img {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: 50% 30%;
-}
 
 
 
-/* Image attributions (CC BY 3.0 requires credit "in any reasonable
-   manner"; a visible credits line in the site footer satisfies that) */
+/* Image attributions (visible credits line in the site footer) */
 .footer-credits {
   margin: 0;
   padding: 22px 0 4px;
