@@ -696,13 +696,6 @@ section {
   color: var(--navy);
 }
 
-.jason-ctas {
-  margin-top: 32px;
-  display: flex;
-  gap: 16px;
-  flex-wrap: wrap;
-}
-
 .our-dream {
   background: var(--cream);
 }
