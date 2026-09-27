@@ -1,0 +1,15 @@
+=={{int:filedesc}}==
+{{Information
+|description={{en|1=Jason Derulo Guesses The Meaning Of Kiwi Slang}}
+|date=2022-07-18
+|source={{From YouTube|XBIUPUfCR40|t=02m42s}}
+|author=Warner Music New Zealand
+|permission=
+|other versions={{Image extracted|1=Jason Derulo in 2022 (cropped).jpg}}
+}}
+
+=={{int:license-header}}==
+{{YouTube}}
+{{LicenseReview}}
+
+[[Category:Jason Derulo in 2022]]

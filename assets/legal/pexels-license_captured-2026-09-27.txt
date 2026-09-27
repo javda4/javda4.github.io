@@ -1,0 +1,49 @@
+PEXELS LICENSE — as captured from https://www.pexels.com/license/ on 2026-09-27
+(read in Chrome; applies to every photo on Pexels, including the two used here)
+
+  "All photos and videos on Pexels can be downloaded and used for free."
+
+  What is allowed?
+  - All photos and videos on Pexels are free to use.
+  - Attribution is not required. Giving credit to the photographer or Pexels
+    is not necessary but always appreciated.
+  - You can modify the photos and videos from Pexels. Be creative and edit
+    them as you like.
+
+  What is not allowed?
+  - Identifiable people may not appear in a bad light or in a way that is
+    offensive.
+  - Don't sell unaltered copies of a photo or video, e.g. as a poster, print
+    or on a physical product without modifying it first.
+  - Don't imply endorsement of your product by people or brands on the imagery.
+  - Don't redistribute or sell the photos and videos on other stock photo or
+    wallpaper platforms.
+  - Don't use the photos or videos as part of your trade-mark, design-mark,
+    trade-name, business name or service mark.
+
+----------------------------------------------------------------------------
+PHOTOS USED UNDER THIS LICENSE
+
+1) assets/cards/financial-relief.jpg
+   Title:        Woman Using Phone With Sick Child Sleeping In Her Arms
+   Photographer: Tima Miroshnichenko (https://www.pexels.com/@tima-miroshnichenko/)
+   Photo page:   https://www.pexels.com/photo/woman-using-phone-with-sick-child-sleeping-in-her-arms-8376331/
+   File used:    https://images.pexels.com/photos/8376331/pexels-photo-8376331.jpeg?auto=compress&cs=tinysrgb&w=1400
+                 SHA-1 340d439e4e30c6070d53f71b32fff9553b22e231
+
+2) assets/cards/long-term.jpg
+   Title:        Cute Little Girl Looking Through The Glass Window
+   Photographer: Isaac Quesada (https://www.pexels.com/@isaacquesada/)
+   Photo page:   https://www.pexels.com/photo/cute-little-girl-looking-through-the-glass-window-4130917/
+   File used:    https://images.pexels.com/photos/4130917/pexels-photo-4130917.jpeg?auto=compress&cs=tinysrgb&w=1400
+                 SHA-1 06bca16e78f60cec479a745ba6dae11135250968
+
+Compliance notes
+- Both files are resized/re-compressed and cropped by CSS as card
+  backgrounds on a website; nothing is sold or redistributed.
+- Neither photo is used to imply endorsement: the people shown are models,
+  and the page makes no claim that they are foundation families or supporters.
+- "Bad light": the photos show caregiving and quiet reflection, matching how
+  the photographers themselves titled/described them; the site presents them
+  sympathetically.
+- Courtesy credits are given on the site under each card group.

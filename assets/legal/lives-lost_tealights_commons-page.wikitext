@@ -1,0 +1,18 @@
+== {{int:filedesc}} ==
+{{Information
+|Description={{en|1=Tealights}}
+{{nl|1=Theelichtjes of waxinelichtjes}}
+|Source={{own}}
+|Author=[[User:Tukka|Steven Lek]]
+|Date=2010-12
+|Permission=
+|other_versions=
+}}
+== {{int:license-header}} ==
+{{self|Cc-zero}}
+
+[[Category:Tealights]]
+[[Category:Burning candles]]
+[[Category:White candles]]
+[[Category:Photographs by User:Tukka]]
+[[Category:Taken with Panasonic HDC-SD700]]
