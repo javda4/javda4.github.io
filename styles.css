@@ -1601,12 +1601,6 @@ a.involved-card.card-photo:focus-visible {
 }
 
 
-/* No photo of Mama Luca is available, so the story stands alone */
-.our-dream-copy {
-  max-width: 760px;
-  margin: 0 auto;
-  text-align: center;
-}
 
 /* Image attributions (CC BY 3.0 requires credit "in any reasonable
    manner"; a visible credits line in the site footer satisfies that) */
