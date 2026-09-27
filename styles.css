@@ -1579,12 +1579,6 @@ a.involved-card.card-photo:focus-visible {
   }
 }
 
-.photo-credit {
-  text-align: center;
-  margin-top: 18px;
-  font-size: 0.78rem;
-  color: #8497a6;
-}
 
 @media (max-width: 960px) {
   .pillar-card.card-photo { min-height: 360px; }
@@ -1606,28 +1600,35 @@ a.involved-card.card-photo:focus-visible {
   object-position: 50% 30%;
 }
 
-/* CC BY 3.0 requires visible credit */
-.jason-photo .photo-attribution {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  padding: 36px 16px 12px;
-  font-size: 0.7rem;
-  text-align: center;
-  color: rgba(255, 248, 236, 0.85);
-  background: linear-gradient(to top, rgba(13, 24, 35, 0.8), transparent);
-}
-
-.jason-photo .photo-attribution a {
-  color: inherit;
-  text-decoration: underline;
-  text-underline-offset: 2px;
-}
 
 /* No photo of Mama Luca is available, so the story stands alone */
 .our-dream-copy {
   max-width: 760px;
   margin: 0 auto;
   text-align: center;
+}
+
+/* Image attributions (CC BY 3.0 requires credit "in any reasonable
+   manner"; a visible credits line in the site footer satisfies that) */
+.footer-credits {
+  margin: 0;
+  padding: 22px 0 4px;
+  font-size: 0.7rem;
+  line-height: 1.6;
+  color: rgba(255, 248, 236, 0.5);
+}
+
+.footer-credits span {
+  font-weight: 600;
+  color: rgba(255, 248, 236, 0.65);
+}
+
+.footer-credits a {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.footer-credits a:hover {
+  color: var(--gold);
 }

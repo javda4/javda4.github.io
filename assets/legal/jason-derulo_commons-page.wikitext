@@ -1,15 +1,20 @@
 =={{int:filedesc}}==
 {{Information
-|description={{en|1=Jason Derulo Guesses The Meaning Of Kiwi Slang}}
-|date=2022-07-18
-|source={{From YouTube|XBIUPUfCR40|t=02m42s}}
-|author=Warner Music New Zealand
+|description={{en|1=Jason Derulo at MTV EMAs 2018}}
+|date=2018-11-05
+|source=https://www.youtube.com/watch?v=WN6zE-wJ2iE
+|author=MTV International
+
 |permission=
-|other versions={{Image extracted|1=Jason Derulo in 2022 (cropped).jpg}}
+|other versions=
 }}
 
 =={{int:license-header}}==
-{{YouTube}}
-{{LicenseReview}}
+{{YouTube CC-BY|[https://www.youtube.com/@MTVUK MTV UK]}}
+{{LicenseReview|site=https://www.youtube.com/watch?v=WN6zE-wJ2iE|user=Chiyako92|date=2019-03-13}}
 
-[[Category:Jason Derulo in 2022]]
+[[Category:Jason Derulo in 2018]]
+[[Category:2018 MTV Europe Music Awards]]
+[[Category:Still images from videos by MTV UK]]
+[[Category:Microphones in 2018]]
+[[Category:Still images from videos by MTV UK]]

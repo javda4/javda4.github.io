@@ -46,4 +46,4 @@ Compliance notes
 - "Bad light": the photos show caregiving and quiet reflection, matching how
   the photographers themselves titled/described them; the site presents them
   sympathetically.
-- Courtesy credits are given on the site under each card group.
+- Courtesy credits are given in the "Photo credits" line of the site footer.
