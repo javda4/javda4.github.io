@@ -410,13 +410,6 @@ section {
   letter-spacing: 0.06em;
 }
 
-.hero .visual-caption {
-  margin: 28px auto 0;
-  max-width: 460px;
-  font-size: 0.78rem;
-  color: rgba(255, 248, 236, 0.5);
-}
-
 /* ThreeUI Gallery scene — the full hero background, mounted by assets/gallery/gallery.js.
    Placeholder photos orbit in a ring around the fixed, centered hero copy. */
 .hero-gallery-scene {
@@ -471,35 +464,6 @@ section {
   -webkit-backdrop-filter: blur(10px);
   border-radius: var(--radius-lg);
   padding: 48px clamp(20px, 5vw, 64px) 40px;
-}
-
-.scroll-cue {
-  position: absolute;
-  bottom: 28px;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 2;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 8px;
-  color: rgba(255, 248, 236, 0.6);
-  font-size: 0.72rem;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-}
-
-.scroll-cue .line {
-  width: 1px;
-  height: 34px;
-  background: linear-gradient(var(--gold), transparent);
-  animation: scrollcue 2s ease-in-out infinite;
-}
-
-@keyframes scrollcue {
-  0% { opacity: 0.2; transform: scaleY(0.4); transform-origin: top; }
-  50% { opacity: 1; transform: scaleY(1); transform-origin: top; }
-  100% { opacity: 0.2; transform: scaleY(0.4); transform-origin: top; }
 }
 
 /* ---------- Transition: Hands Reaching ---------- */
