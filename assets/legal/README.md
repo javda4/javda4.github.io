@@ -65,14 +65,17 @@ should not be illustrated with an identifiable child's face.
 
 ## Jason and Mama Luca portraits
 
-Both the "A Message From Jason" and "Our Dream" sections currently show
-**placeholders**, not photos. (A CC BY 3.0 photo of Jason was used briefly and then
-removed at the foundation's request, so no Jason image is published and no credit is needed.)
-An official portrait supplied by Jason's team or the foundation would carry
-its own rights and should be documented here when added.
+**Jason** — the "A Message From Jason" section uses `assets/people/jason.jpg`,
+a 900x1200 crop of `assets/gallery/jason.jpg` (an official studio portrait
+supplied by the foundation; the full-resolution original is not published).
+It is not a stock or Creative Commons image, so no footer credit is listed.
+(A CC BY 3.0 photo of Jason was used briefly earlier and then removed at the
+foundation's request.) If the photographer's release or credit requirements
+become available, record them here.
 
-No freely licensed photo of **Mama Luca** exists on Wikimedia Commons or
-Openverse, so the "Our Dream" section shows a placeholder.
+**Mama Luca** — no freely licensed photo exists on Wikimedia Commons or
+Openverse. The "Our Dream" section is now text-only (the placeholder was
+removed at the foundation's request).
 
 ---
 
