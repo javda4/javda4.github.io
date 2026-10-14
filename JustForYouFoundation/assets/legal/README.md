@@ -97,3 +97,16 @@ receipts for those files on record.
 | Volunteer | `C4_1.jpg` |
 | Stay Connected | `C4.jpeg` |
 | Hero gallery panel 9 (`assets/gallery/gallery-6.webp`) | `bg1.jpeg` |
+
+---
+
+## Partner logos (Supabase storage, not in this repo's deploy)
+
+Partner logos are shown in the Partners section with each partner's
+permission. They're the partners' own trademarks, supplied by the partners for
+this purpose, not stock or third-party photos. They are stored in the private
+Supabase bucket `partner-logos` and listed in the `public.partners` table.
+
+| Partner | Logo source | Website |
+| --- | --- | --- |
+| Kimberley Desrouleaux | `Partners/Kim.png`, supplied by the foundation 2026-10-14 | https://kimberleydesrouleaux.com/ |

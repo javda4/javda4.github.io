@@ -3,6 +3,11 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<!-- Content Security Policy: only our own scripts plus Three.js from cdnjs can
+     run, and the page may only talk to our Supabase project. Blocks injected
+     scripts (XSS) even if markup ever slipped through. -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: blob: https://ntkbnrnoyejwonpfxnfy.supabase.co; connect-src 'self' https://ntkbnrnoyejwonpfxnfy.supabase.co; object-src 'none'; base-uri 'self'; form-action 'none'; frame-src 'none'" />
+<meta name="referrer" content="strict-origin-when-cross-origin" />
 <title>Just For You Foundation | Because Every Child Deserves To Just Be A Kid</title>
 <meta name="description" content="Just For You Foundation stands beside children battling cancer and the families who love them with comfort, financial relief, and a community that shows up when it matters most." />
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -261,16 +266,8 @@
         people who love them.
       </p>
     </div>
-    <div class="partner-grid reveal-stagger">
-      <div class="partner-logo reveal">Partner One</div>
-      <div class="partner-logo reveal">Partner Two</div>
-      <div class="partner-logo reveal">Partner Three</div>
-      <div class="partner-logo reveal">Partner Four</div>
-      <div class="partner-logo reveal">Partner Five</div>
-      <div class="partner-logo reveal">Partner Six</div>
-      <div class="partner-logo reveal">Partner Seven</div>
-      <div class="partner-logo reveal">Partner Eight</div>
-    </div>
+    <!-- Filled from the Supabase `partners` table by script.js -->
+    <div class="partner-grid reveal-stagger" id="partnerGrid" aria-live="polite"></div>
   </div>
 </section>
 
@@ -348,15 +345,20 @@
     <form class="contact-form reveal" id="contactForm">
       <label>
         Your Name*
-        <input type="text" name="name" required placeholder="Your name" />
+        <input type="text" name="name" required maxlength="100" autocomplete="name" placeholder="Your name" />
       </label>
       <label>
         Your Email*
-        <input type="email" name="email" required placeholder="you@example.com" />
+        <input type="email" name="email" required maxlength="254" autocomplete="email" placeholder="you@example.com" />
       </label>
       <label>
         Your Message
-        <textarea name="message" rows="5" placeholder="How can we help?"></textarea>
+        <textarea name="message" rows="5" maxlength="2000" placeholder="How can we help?"></textarea>
+      </label>
+      <!-- Honeypot: hidden from people, bots fill it in -->
+      <label class="hp-field" aria-hidden="true">
+        Leave this empty
+        <input type="text" name="website" tabindex="-1" autocomplete="off" />
       </label>
       <button type="submit" class="btn btn-primary">Send Message</button>
       <p class="form-feedback" id="contactFeedback"></p>
