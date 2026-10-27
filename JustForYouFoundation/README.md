@@ -1,62 +1,86 @@
-# Just For You Foundation — Website (threeweb_4)
+# Just For You Foundation — Website
 
-A fork of `threeweb_3`. New here: every card in **Who We Are** (Comfort,
-Financial Relief, Community), **Impact** (Diagnosed Each Year, Lives Lost,
-Long-Term Impact) and **Get Involved** (Donate, Partner With Us, Volunteer,
-Stay Connected) now has a full-bleed photo background (`assets/cards/`,
-styled by the `.card-photo` block at the end of `styles.css`) under a navy
-scrim with white/cream/gold type. Seven photos come from the previously
-unused files in `assets/gallery/Cancer/`; three are free-to-use images found
-online (Financial Relief and Long-Term Impact: Pexels License; Lives Lost:
-CC0, Wikimedia Commons), with their
-rights documented in `assets/legal/`.
+**Live site: https://javda4.github.io/JustForYouFoundation/**
 
-The hero gallery also gained `assets/gallery/gallery-6.webp` (from
-`Cancer/bg1.jpeg`), pinned to panel 9 only (the second of the three panels
-that showed the two-girls photo) via `PANEL_IMAGE_OVERRIDES` in
-`assets/gallery/gallery.js`; the other 15 panels keep the original
-five-photo cycle.
+The website for the Just For You Foundation, a 501(c)(3) that stands beside
+children battling cancer and the families who love them, with comfort,
+financial relief and a community that shows up when it matters most.
 
----
+A single-page static site: plain HTML, CSS and JavaScript with no build step.
+Three.js (r128, from cdnjs) powers the hero gallery and scroll transition.
+Supabase stores contact-form messages and the partner list.
 
-_Original threeweb_3 notes:_
-
-A fork of `threeweb_2` — same single-page, static site (plain HTML/CSS/JS, no
-build step) and the same Three.js hero gallery / scroll transition — but with
-copy pulled from the real, live site at [justforyoufoundation.org](http://www.justforyoufoundation.org/),
-its About Us, Donation, and Contact pages: the real mission statement, Jason's
-founder message, the Mama Luca origin story (new "Our Dream" section), the
-sourced childhood-cancer statistics (IARC / WHO), and the real address, phone,
-and email in the footer and new Contact section.
-
-## Run it
-
-Open `index.html` directly in a browser, or serve the folder:
+## Run it locally
 
 ```bash
+npm install
 npm run dev
 ```
 
-Serves on **http://localhost:3004** (see `package.json`).
+Then open **http://localhost:3004**.
 
-## Hero gallery
+## Features
 
-The hero section's background (`#heroGallery`, full-bleed behind the hero
-copy) is a live Three.js scene: five photos billboard toward the camera and
-slowly orbit (no vertical bob) around the fixed, centered headline/CTA/stats
-block (`assets/gallery/gallery.js` + `gallery-1.webp`–`gallery-5.webp`). It's
-adapted from `@designcodeio/threeui`'s `Gallery` component into a plain
-script (no React or bundler required) so it fits this project's no-build
-setup, with a radial scrim (`.hero-scrim`) keeping the text readable as
-photos pass behind it. If WebGL is unavailable, the hero falls back to its
-plain gradient background.
+- **Three.js hero gallery:** sixteen curved photo panels orbit the headline,
+  passing behind and in front of the text. Falls back to a plain gradient
+  without WebGL.
+- **"Hands Reaching" scroll transition** (`transitions/hands-reaching.js`).
+- **Photo cards** for Who We Are, Impact and Get Involved (`assets/cards/`).
+- **Contact form → Supabase + email.** Messages are validated and stored in a
+  private database table that visitors can't read, and are emailed to
+  info@justforyoufoundation.org (via Resend).
+- **Dynamic partners section.** Partner cards (logo, name, link) load from the
+  Supabase `partners` table, so adding a partner needs no code change.
 
-## What's real vs. still placeholder
+## Project layout
 
-- **Real**: hero mission statement, hero/impact statistics (sourced,
-  IARC/WHO), Jason's founder message, the Mama Luca "Our Dream" story,
-  footer + Contact section address/phone/email, 501(c)(3) status line.
-- **Still placeholder**: all photography (search `visual-caption` in
-  `index.html`), the "Partners" logo grid (the live site has no partners
-  section), and the Donate/Contact/Newsletter forms — all UI-only, not
-  wired to a payment processor or email provider yet.
+| Path | What |
+| --- | --- |
+| `index.html`, `styles.css`, `script.js` | The page |
+| `assets/gallery/` | Hero gallery script and images |
+| `transitions/` | Scroll transition |
+| `assets/cards/`, `assets/people/` | Card and portrait photos |
+| `assets/legal/` | Image licenses and evidence |
+| `supabase/migrations/` | Database schema, security rules, email trigger |
+| `scripts/add-partner.mjs` | Adds a partner (uploads logo, inserts row) |
+| `deploy.sh` | Publishes the site to GitHub Pages |
+
+## Adding a partner
+
+```bash
+node scripts/add-partner.mjs "Partner Name" path/to/logo.png https://partner-site.com [sort_order]
+```
+
+This uploads the logo to the private `partner-logos` storage bucket, creates a
+10-year signed URL and adds the row. The card appears on the live site
+immediately. To hide a partner, set `is_active` to `false` in the table.
+
+## Configuration
+
+Copy `.env.example` to `.env` and fill in the Supabase and Resend values.
+`.env` is gitignored and never deployed. Only the public Supabase anon key is
+used by the page; the service-role key and database URL are for local scripts
+only.
+
+## Security
+
+- Contact messages live in a `private` schema that isn't exposed by the API.
+  Visitors can only submit, through a validated database function, and can never
+  read, edit or delete messages.
+- Server-side validation, markup rejection, rate limiting and bot traps.
+- A Content-Security-Policy restricts the page to its own scripts, Three.js
+  and the Supabase project.
+
+## Deploying
+
+```bash
+bash deploy.sh "Short description of the change"
+```
+
+This publishes to the `JustForYouFoundation/` folder of the
+`javda4/javda4.github.io` repo, which GitHub Pages serves at the live URL above.
+
+## Image rights
+
+Every externally sourced image is documented in `assets/legal/README.md`, with
+credits in the site footer.
