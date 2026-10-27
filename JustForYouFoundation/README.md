@@ -71,14 +71,58 @@ only.
 - A Content-Security-Policy restricts the page to its own scripts, Three.js
   and the Supabase project.
 
-## Deploying
+## Deploying with `deploy.sh`
+
+The live site is published only through `deploy.sh`. Run it from this folder
+after every change to the site:
 
 ```bash
 bash deploy.sh "Short description of the change"
 ```
 
-This publishes to the `JustForYouFoundation/` folder of the
-`javda4/javda4.github.io` repo, which GitHub Pages serves at the live URL above.
+The message is required and becomes the commit message on the Pages repo.
+
+**Requirements:** `git`, plus push access to `javda4/javda4.github.io` (for
+example, signed in with `gh auth login`).
+
+**What it does:**
+
+1. Clones `javda4/javda4.github.io` into a temporary folder.
+2. Removes everything in it except `.github/`, which holds the GitHub Pages
+   workflow.
+3. Writes a root `index.html` that redirects `https://javda4.github.io/` to
+   `/JustForYouFoundation/`.
+4. Copies the site files into `JustForYouFoundation/`:
+   - `index.html`, `styles.css`, `script.js`, `README.md`
+   - `transitions/*.js`
+   - `assets/gallery/gallery.js` and `assets/gallery/gallery-*.webp`
+   - `assets/cards/*.jpg`, `assets/people/*`, `assets/legal/*`
+5. Commits and pushes to `main`. If nothing changed, it stops without
+   committing.
+6. GitHub Actions redeploys the site, usually within a minute. The temporary
+   folder is deleted automatically.
+
+**Never published:** `.env`, `supabase/`, `scripts/`, `node_modules/`,
+`assets/gallery/Cancer/` and the full-resolution stock originals in
+`assets/gallery/`. Stock licenses forbid redistributing the source files, and
+only the resized copies are used.
+
+**Adding new files:** the script copies an explicit list. If the page starts
+referencing a new file or folder, add it to the `cp` lines in `deploy.sh`, or it
+will be missing from the live site.
+
+**Checking a deploy:**
+
+```bash
+gh run list -R javda4/javda4.github.io -L 1
+```
+
+Then open the live URL above and confirm the change. Partner changes made in
+Supabase don't need a deploy, because the page loads them on every visit.
+
+**Don't** `git push` this folder to the Pages repo directly. It would replace
+the `JustForYouFoundation/` layout and break the live site. Source code goes to
+this repo's own `origin`, and the live site goes through `deploy.sh`.
 
 ## Image rights
 
