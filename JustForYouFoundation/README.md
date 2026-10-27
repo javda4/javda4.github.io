@@ -37,6 +37,7 @@ Then open **http://localhost:3004**.
 | Path | What |
 | --- | --- |
 | `index.html`, `styles.css`, `script.js` | The page |
+| `404.html` | Self-contained "Page Not Found" page, served at the Pages root |
 | `assets/gallery/` | Hero gallery script and images |
 | `transitions/` | Scroll transition |
 | `assets/cards/`, `assets/people/` | Card and portrait photos |
@@ -91,7 +92,8 @@ example, signed in with `gh auth login`).
 2. Removes everything in it except `.github/`, which holds the GitHub Pages
    workflow.
 3. Writes a root `index.html` that redirects `https://javda4.github.io/` to
-   `/JustForYouFoundation/`.
+   `/JustForYouFoundation/`, and copies `404.html` to the repo root. GitHub
+   Pages shows it for any missing URL.
 4. Copies the site files into `JustForYouFoundation/`:
    - `index.html`, `styles.css`, `script.js`, `README.md`
    - `transitions/*.js`
