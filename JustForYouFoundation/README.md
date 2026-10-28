@@ -7,7 +7,7 @@ children battling cancer and the families who love them, with comfort,
 financial relief and a community that shows up when it matters most.
 
 A single-page static site: plain HTML, CSS and JavaScript with no build step.
-Three.js (r128, from cdnjs) powers the hero gallery and scroll transition.
+Three.js (r128, from cdnjs) powers the "Hands Reaching" scroll transition.
 Supabase stores contact-form messages and the partner list.
 
 ## Run it locally
@@ -21,9 +21,11 @@ Then open **http://localhost:3004**.
 
 ## Features
 
-- **Three.js hero gallery:** sixteen curved photo panels orbit the headline,
-  passing behind and in front of the text. Falls back to a plain gradient
-  without WebGL.
+- **"Golden Hour" hero:** the kids' photos crossfade on the right with a slow
+  zoom and pan (Ken Burns), golden fireflies drift up through the scene, and
+  the headline sits on the left. Pauses off screen; a still photo with no
+  fireflies for visitors who prefer reduced motion
+  (`assets/hero/golden-hour.js` + `.css`).
 - **"Hands Reaching" scroll transition** (`transitions/hands-reaching.js`).
 - **Photo cards** for Who We Are, Impact and Get Involved (`assets/cards/`).
 - **Contact form → Supabase + email.** Messages are validated and stored in a
@@ -38,7 +40,8 @@ Then open **http://localhost:3004**.
 | --- | --- |
 | `index.html`, `styles.css`, `script.js` | The page |
 | `404.html` | Self-contained "Page Not Found" page, served at the Pages root |
-| `assets/gallery/` | Hero gallery script and images |
+| `assets/hero/` | "Golden Hour" hero (slideshow + fireflies) |
+| `assets/gallery/` | Hero photos (`gallery-*.webp`); `gallery.js` is the retired spinning-ring gallery, kept but not loaded |
 | `transitions/` | Scroll transition |
 | `assets/cards/`, `assets/people/` | Card and portrait photos |
 | `assets/legal/` | Image licenses and evidence |
@@ -97,7 +100,8 @@ example, signed in with `gh auth login`).
 4. Copies the site files into `JustForYouFoundation/`:
    - `index.html`, `styles.css`, `script.js`, `README.md`
    - `transitions/*.js`
-   - `assets/gallery/gallery.js` and `assets/gallery/gallery-*.webp`
+   - `assets/hero/*.css` and `assets/hero/*.js`
+   - `assets/gallery/gallery-*.webp`
    - `assets/cards/*.jpg`, `assets/people/*`, `assets/legal/*`
 5. Commits and pushes to `main`. If nothing changed, it stops without
    committing.
