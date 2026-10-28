@@ -479,8 +479,21 @@ section {
   overflow: hidden;
 }
 
+/* The next section overlaps the last screen of the pinned animation, rising
+   and fading in over the hand as it pushes past, so there's no empty stretch.
+   Its top edge is feathered (--overlap-feather, driven by the script) so no
+   hard line shows against the navy; the feather shrinks to 0 as it lands. */
 .transition-hands.enhanced {
   height: 320vh;
+  margin-bottom: -100vh;
+}
+
+.transition-hands.enhanced + section {
+  position: relative;
+  z-index: 2;
+  will-change: opacity;
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 var(--overlap-feather, 0px));
+  mask-image: linear-gradient(to bottom, transparent 0, #000 var(--overlap-feather, 0px));
 }
 
 .transition-pin {

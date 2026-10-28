@@ -324,8 +324,18 @@
   targetProgress = getProgress();
 
   let smoothProgress = targetProgress;
-  const NAVY = [24, 42, 58];
-  const CREAM = [255, 248, 236];
+
+  // The following section overlaps the end of this one (negative margin in
+  // styles.css) and fades in while the hand is still reaching and dissolving.
+  const nextSection = section.nextElementSibling;
+  // Progress at which the next section's top enters the viewport.
+  function overlapStart() {
+    const overlap = -parseFloat(getComputedStyle(section).marginBottom) || 0;
+    const total = section.offsetHeight - window.innerHeight;
+    return total > 0 ? Math.max(0, 1 - overlap / total) : 1;
+  }
+  let OVERLAP_START = overlapStart();
+  window.addEventListener("resize", () => { OVERLAP_START = overlapStart(); });
 
   function animate(t) {
     requestAnimationFrame(animate);
@@ -342,11 +352,22 @@
       caption.style.opacity = String(Math.min(capIn, capOut));
     }
 
-    const bgT = smoothstep(0.9, 1.0, targetProgress);
-    const r = Math.round(NAVY[0] + (CREAM[0] - NAVY[0]) * bgT);
-    const g = Math.round(NAVY[1] + (CREAM[1] - NAVY[1]) * bgT);
-    const b = Math.round(NAVY[2] + (CREAM[2] - NAVY[2]) * bgT);
-    section.style.background = `rgb(${r}, ${g}, ${b})`;
+    if (nextSection) {
+      // Show the next section's content as soon as it starts arriving, rather
+      // than waiting for the page's scroll-reveal, which would leave it blank.
+      if (!nextSection.dataset.revealed && targetProgress > OVERLAP_START) {
+        nextSection.dataset.revealed = "1";
+        nextSection.querySelectorAll(".reveal, .reveal-stagger").forEach((el) => {
+          el.classList.add("is-visible");
+          if (el.classList.contains("reveal-stagger")) {
+            Array.from(el.children).forEach((child, i) => child.style.setProperty("--stagger-index", i));
+          }
+        });
+      }
+      const arrive = smoothstep(OVERLAP_START, 1.0, targetProgress);
+      nextSection.style.opacity = String(smoothstep(OVERLAP_START, 0.9, targetProgress));
+      nextSection.style.setProperty("--overlap-feather", `${Math.round((1 - arrive) * window.innerHeight * 0.35)}px`);
+    }
 
     renderer.render(scene, camera);
   }
