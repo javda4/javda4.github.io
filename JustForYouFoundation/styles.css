@@ -1054,6 +1054,19 @@ section {
   cursor: wait;
 }
 
+.contact-form .form-note {
+  font-size: 0.8rem;
+  line-height: 1.5;
+  color: #5b6b79;
+}
+
+.contact-form .form-note a {
+  color: var(--navy);
+  font-weight: 600;
+  text-decoration-color: var(--gold);
+  text-underline-offset: 3px;
+}
+
 .contact-form .form-feedback {
   color: var(--gold-dark);
 }

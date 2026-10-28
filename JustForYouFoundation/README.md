@@ -40,6 +40,7 @@ Then open **http://localhost:3004**.
 | --- | --- |
 | `index.html`, `styles.css`, `script.js` | The page |
 | `404.html` | Self-contained "Page Not Found" page, served at the Pages root |
+| `privacy.html` | Privacy Policy (linked from the footer and the contact form) |
 | `assets/hero/` | "Golden Hour" hero (slideshow + fireflies) |
 | `assets/gallery/` | Hero photos (`gallery-*.webp`); `gallery.js` is the retired spinning-ring gallery, kept but not loaded |
 | `transitions/` | Scroll transition |
@@ -72,6 +73,9 @@ only.
   Visitors can only submit, through a validated database function, and can never
   read, edit or delete messages.
 - Server-side validation, markup rejection, rate limiting and bot traps.
+- Rate limiting uses a salted HMAC of the sender's IP (secret salt in Supabase
+  Vault). An hourly `pg_cron` job deletes each hash within 24 hours, keeping
+  the name, email and message.
 - A Content-Security-Policy restricts the page to its own scripts, Three.js
   and the Supabase project.
 
@@ -98,7 +102,7 @@ example, signed in with `gh auth login`).
    `/JustForYouFoundation/`, and copies `404.html` to the repo root. GitHub
    Pages shows it for any missing URL.
 4. Copies the site files into `JustForYouFoundation/`:
-   - `index.html`, `styles.css`, `script.js`, `README.md`
+   - `index.html`, `privacy.html`, `styles.css`, `script.js`, `README.md`
    - `transitions/*.js`
    - `assets/hero/*.css` and `assets/hero/*.js`
    - `assets/gallery/gallery-*.webp`
